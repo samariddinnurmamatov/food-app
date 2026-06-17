@@ -98,6 +98,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.8,
+    weight: "550 g",
   },
   {
     id: "margarita",
@@ -110,6 +111,7 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.7,
+    weight: "480 g",
   },
   {
     id: "quattro-formaggi",
@@ -122,6 +124,7 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.6,
+    weight: "560 g",
   },
   {
     id: "bbq-tovuq-pizza",
@@ -134,6 +137,46 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.5,
+    weight: "580 g",
+  },
+  {
+    id: "diavola-pizza",
+    restaurantId: "bellissimo",
+    name: "Diavola",
+    description: "Achchiq salami, qizil qalampir va mozzarella bilan o'tkir pizza",
+    price: 54000,
+    image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=600&q=80",
+    category: "Pizza",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.6,
+    weight: "540 g",
+  },
+  {
+    id: "garlic-bread",
+    restaurantId: "bellissimo",
+    name: "Sarimsoqli Non",
+    description: "Issiq tandir non, sarimsoq sariyog'i va parmezan bilan",
+    price: 22000,
+    image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=600&q=80",
+    category: "Garnir",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.5,
+    weight: "180 g",
+  },
+  {
+    id: "tiramisu",
+    restaurantId: "bellissimo",
+    name: "Tiramisu",
+    description: "Klassik italyan deserti, mascarpone va kofe bilan",
+    price: 32000,
+    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&q=80",
+    category: "Shirinlik",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.8,
+    weight: "150 g",
   },
 
   // Evos
@@ -148,6 +191,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.7,
+    weight: "320 g",
   },
   {
     id: "smash-burger",
@@ -160,6 +204,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.8,
+    weight: "300 g",
   },
   {
     id: "crispy-burger",
@@ -172,6 +217,7 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.5,
+    weight: "280 g",
   },
   {
     id: "coca-cola",
@@ -182,7 +228,47 @@ export const foodItems: FoodItem[] = [
     image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80",
     category: "Ichimlik",
     isPopular: false,
+    isAvailable: false,
+    weight: "0.5 L",
+  },
+  {
+    id: "evos-hot-dog",
+    restaurantId: "evos",
+    name: "Hot-Dog",
+    description: "Issiq bulochka, tovuq sosiskasi, ketchup va gorchitsa bilan",
+    price: 22000,
+    image: "https://images.unsplash.com/photo-1612392062798-2dcc52c2a82a?w=600&q=80",
+    category: "Fast Food",
+    isPopular: false,
     isAvailable: true,
+    rating: 4.4,
+    weight: "220 g",
+  },
+  {
+    id: "evos-fri-kartoshka",
+    restaurantId: "evos",
+    name: "Fri Kartoshka",
+    description: "Xushbo'y qovurilgan kartoshka fri, tuz va ziravorlar bilan",
+    price: 18000,
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80",
+    category: "Fast Food",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.5,
+    weight: "150 g",
+  },
+  {
+    id: "evos-tovuq-nagets",
+    restaurantId: "evos",
+    name: "Tovuq Nagets",
+    description: "Qarsildoq qoplamada tovuq nagetslari, sous bilan",
+    price: 26000,
+    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80",
+    category: "Fast Food",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.6,
+    weight: "180 g",
   },
 
   // Choyxona No1
@@ -197,6 +283,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.9,
+    weight: "400 g",
   },
   {
     id: "shashlik",
@@ -209,6 +296,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.8,
+    weight: "350 g",
   },
   {
     id: "manti",
@@ -221,6 +309,7 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.6,
+    weight: "300 g",
   },
   {
     id: "lag-mon",
@@ -233,6 +322,46 @@ export const foodItems: FoodItem[] = [
     isPopular: false,
     isAvailable: true,
     rating: 4.7,
+    weight: "380 g",
+  },
+  {
+    id: "somsa",
+    restaurantId: "choyxona-1",
+    name: "Tandir Somsa",
+    description: "Tandirda pishirilgan go'shtli somsa, piyoz va ziravorlar bilan",
+    price: 15000,
+    image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80",
+    category: "Milliy",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.7,
+    weight: "160 g",
+  },
+  {
+    id: "shorva",
+    restaurantId: "choyxona-1",
+    name: "Mastava",
+    description: "Guruchli milliy sho'rva, mol go'shti va sabzavotlar bilan",
+    price: 28000,
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80",
+    category: "Sho'rva",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.6,
+    weight: "350 g",
+  },
+  {
+    id: "choy",
+    restaurantId: "choyxona-1",
+    name: "Ko'k Choy",
+    description: "An'anaviy ko'k choy, choynak bilan beriladi",
+    price: 8000,
+    image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&q=80",
+    category: "Ichimlik",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.5,
+    weight: "0.5 L",
   },
 
   // Oqtepa Lavash
@@ -247,6 +376,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.6,
+    weight: "220 g",
   },
   {
     id: "donar-kabab",
@@ -259,6 +389,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.5,
+    weight: "320 g",
   },
   {
     id: "lavash-xl",
@@ -269,8 +400,48 @@ export const foodItems: FoodItem[] = [
     image: "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?w=600&q=80",
     category: "Lavash",
     isPopular: false,
+    isAvailable: false,
+    rating: 4.4,
+    weight: "450 g",
+  },
+  {
+    id: "tovuq-donar",
+    restaurantId: "oqtepa-lavash",
+    name: "Tovuq Donar",
+    description: "Tovuq go'shtli donar, yangi sabzavotlar va sarimsoqli sous bilan",
+    price: 33000,
+    image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=600&q=80",
+    category: "Donar",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.6,
+    weight: "300 g",
+  },
+  {
+    id: "kartoshka-fri-oqtepa",
+    restaurantId: "oqtepa-lavash",
+    name: "Fri Kartoshka",
+    description: "Qovurilgan kartoshka fri, firma sousi bilan",
+    price: 16000,
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80",
+    category: "Garnir",
+    isPopular: false,
     isAvailable: true,
     rating: 4.4,
+    weight: "150 g",
+  },
+  {
+    id: "ayron",
+    restaurantId: "oqtepa-lavash",
+    name: "Ayron",
+    description: "Sovuq tabiiy ayron, chanqoqni bosadigan ichimlik",
+    price: 9000,
+    image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&q=80",
+    category: "Ichimlik",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.3,
+    weight: "0.3 L",
   },
 
   // Sushi Bar
@@ -285,6 +456,7 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.8,
+    weight: "230 g",
   },
   {
     id: "losos-nigiri",
@@ -297,6 +469,59 @@ export const foodItems: FoodItem[] = [
     isPopular: true,
     isAvailable: true,
     rating: 4.7,
+    weight: "90 g",
+  },
+  {
+    id: "california-roll",
+    restaurantId: "sushi-bar",
+    name: "California Roll",
+    description: "Krab go'shti, avoqado, bodring va tobiko ikrasi bilan",
+    price: 68000,
+    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=600&q=80",
+    category: "Rolli",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.6,
+    weight: "220 g",
+  },
+  {
+    id: "unagi-roll",
+    restaurantId: "sushi-bar",
+    name: "Unagi Roll",
+    description: "Marinadlangan ilon baliq, krem pishloq va unagi sousi bilan",
+    price: 92000,
+    image: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=600&q=80",
+    category: "Rolli",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.7,
+    weight: "240 g",
+  },
+  {
+    id: "tovuq-tempura",
+    restaurantId: "sushi-bar",
+    name: "Tovuq Tempura",
+    description: "Qarsildoq tempura qoplamasidagi tovuq bo'laklari, sous bilan",
+    price: 58000,
+    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80",
+    category: "Issiq taom",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.5,
+    weight: "250 g",
+  },
+  {
+    id: "miso-shorva",
+    restaurantId: "sushi-bar",
+    name: "Miso Sho'rva",
+    description: "An'anaviy yapon miso sho'rvasi, tofu va vakame bilan",
+    price: 28000,
+    image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80",
+    category: "Sho'rva",
+    isPopular: false,
+    isAvailable: true,
+    rating: 4.4,
+    weight: "300 g",
   },
 ];
 
@@ -306,8 +531,8 @@ export const orders: Order[] = [
     restaurantName: "Bellissimo Pizza",
     restaurantImage: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=200&q=80",
     items: [
-      { name: "Pepperoni Pizza", quantity: 1, price: 48000 },
-      { name: "Margarita", quantity: 1, price: 42000 },
+      { name: "Pepperoni Pizza", quantity: 1, price: 48000, foodId: "pepperoni-pizza", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=200&q=80" },
+      { name: "Margarita", quantity: 1, price: 42000, foodId: "margarita", image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=200&q=80" },
     ],
     total: 90000,
     status: "on_the_way",
@@ -319,8 +544,8 @@ export const orders: Order[] = [
     restaurantName: "Evos",
     restaurantImage: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80",
     items: [
-      { name: "Tovuq Lavash", quantity: 2, price: 32000 },
-      { name: "Coca-Cola 0.5L", quantity: 1, price: 12000 },
+      { name: "Tovuq Lavash", quantity: 2, price: 32000, foodId: "tovuq-lavash", image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=200&q=80" },
+      { name: "Coca-Cola 0.5L", quantity: 1, price: 12000, foodId: "coca-cola", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&q=80" },
     ],
     total: 76000,
     status: "delivered",
@@ -332,7 +557,7 @@ export const orders: Order[] = [
     restaurantName: "Choyxona No1",
     restaurantImage: "https://images.unsplash.com/photo-1574484284002-952d92456975?w=200&q=80",
     items: [
-      { name: "Palov", quantity: 2, price: 45000 },
+      { name: "Palov", quantity: 2, price: 45000, foodId: "palov", image: "https://images.unsplash.com/photo-1574484284002-952d92456975?w=200&q=80" },
     ],
     total: 90000,
     status: "delivered",
@@ -363,4 +588,21 @@ export function getFoodById(id: string) {
 
 export function getOrderById(id: string) {
   return orders.find((o) => o.id === id);
+}
+
+// Maps a category id (e.g. "pizza") to the foods that belong to it.
+// Primary match: the food's restaurant sits in that category. Fallback: the
+// food's own free-form `category` label loosely matches the category id/name.
+export function getFoodsByCategory(categoryId: string) {
+  const cat = categories.find((c) => c.id === categoryId);
+  const restaurantIds = new Set(
+    restaurants.filter((r) => r.categoryId === categoryId).map((r) => r.id)
+  );
+  const needle = (cat?.name ?? categoryId).toLowerCase();
+  return foodItems.filter(
+    (f) =>
+      restaurantIds.has(f.restaurantId) ||
+      f.category.toLowerCase().includes(needle) ||
+      needle.includes(f.category.toLowerCase())
+  );
 }

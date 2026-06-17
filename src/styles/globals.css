@@ -16,6 +16,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -40,6 +42,8 @@
   --muted-foreground: #737373;
   --border: #e5e5e5;
   --destructive: #dc2626;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
   --ring: #EF4444;
 }
 
@@ -57,6 +61,8 @@
   --muted-foreground: #a3a3a3;
   --border: #2a2a2a;
   --destructive: #f87171;
+  --success: #4ade80;
+  --success-foreground: #0a0a0a;
   --ring: #fafafa;
 }
 
@@ -74,6 +80,43 @@
     @apply bg-background text-foreground;
     -webkit-tap-highlight-color: transparent;
   }
+  /* Tailwind v4 preflight drops the default pointer cursor on buttons —
+     restore it for every interactive element so the whole UI feels clickable. */
+  button:not(:disabled),
+  a[href],
+  [role="button"],
+  label[for],
+  summary,
+  select {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  /* Snappier taps on touch devices: no 300ms delay, no long-press callout. */
+  a, button, [role="button"] {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* WCAG 2.4.7 — keyboard-only focus ring on every interactive element.
+   `:focus-visible` means mouse clicks stay ring-free; only keyboard /
+   programmatic focus shows it. Uses the brand --ring token, visible in both
+   light and dark.
+
+   This lives in the `utilities` layer (NOT `base`) on purpose: Tailwind v4
+   orders layers `theme, base, components, utilities`, so a `base`-layer rule
+   loses the cascade to the `.outline-none` utility many inputs carry
+   (`outline-style: none`). Declaring it here, in the same layer and after,
+   lets it override `outline-none` while still only firing on keyboard focus. */
+@layer utilities {
+  :where(a, button, input, textarea, select, [role="button"], [tabindex]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
 }
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -85,4 +128,15 @@
 .btn-press:active {
   transform: scale(0.97);
   opacity: 0.85;
+}
+
+/* ── iOS safe-area helpers ──
+   Pad fixed bottom bars / the footer so their content clears the home
+   indicator on notched devices (needs viewportFit:'cover' on the viewport).
+   On non-notched devices env() resolves to 0, leaving just the base padding. */
+.pb-safe {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+.pb-safe-4 {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 }

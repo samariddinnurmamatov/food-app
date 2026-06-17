@@ -5,6 +5,11 @@ const withNextIntl = createNextIntlPlugin('./src/i18n.ts'); // 🔹 To‘g‘ri 
 
 const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
 };
 
 export default withNextIntl(nextConfig);

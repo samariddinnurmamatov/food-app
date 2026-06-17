@@ -9,19 +9,23 @@
     "allCount": "All {count}",
     "emptyCategory": "Nothing found in this category",
     "viewAll": "View all",
-    "promo1Tag": "Special offer",
-    "promo1Desc": "Discount on your first order",
-    "promo1Btn": "Place order",
-    "promo2Tag": "Evos promo",
-    "promo2Desc": "Discount on your favorite dishes",
-    "promo2Btn": "View",
-    "promo3Tag": "Free delivery",
-    "promo3Discount": "0 so'm",
-    "promo3Desc": "On orders over 100,000 so'm",
-    "promo3Btn": "Place order",
+    "banner1Title": "−50% on your first order",
+    "banner1Subtitle": "Order your favorite dishes at a great price",
+    "banner1Cta": "Place order",
+    "banner2Title": "Evos −20%",
+    "banner2Subtitle": "Discount on popular burgers and lavash",
+    "banner2Cta": "View",
+    "banner3Title": "Free delivery",
+    "banner3Subtitle": "On all orders over 100,000 so'm",
+    "banner3Cta": "Place order",
+    "banner4Title": "New dishes every day",
+    "banner4Subtitle": "Fresh offers from the best restaurants",
+    "banner4Cta": "Explore",
     "addToCart": "Add to cart",
     "order": "Order",
-    "cartItems": "{count} items"
+    "cartItems": "{count} items",
+    "increaseQty": "Increase quantity of {name}",
+    "decreaseQty": "Decrease quantity of {name}"
   },
   "Search": {
     "placeholder": "Search...",
@@ -39,6 +43,8 @@
     "freeDelivery": "Free delivery",
     "freeDeliveryHintPrefix": "Add",
     "freeDeliveryHintSuffix": "more for free delivery",
+    "freeDeliveryReached": "Free delivery ✓",
+    "freeDeliveryProgress": "Add <b>{amount}</b> more for free delivery",
     "itemsCount": "{count} items",
     "promoPlaceholder": "Promo code",
     "apply": "Apply",
@@ -46,7 +52,16 @@
     "delivery": "Delivery",
     "free": "Free",
     "total": "Total",
-    "checkout": "Place order"
+    "checkout": "Place order",
+    "discount": "Discount",
+    "promoAppliedPercent": "Promo applied · {code} −{percent}%",
+    "promoAppliedFreeDelivery": "Promo applied · {code} · free delivery",
+    "promoInvalid": "Invalid promo code",
+    "promoRemove": "Remove promo code",
+    "availablePromos": "Available codes",
+    "increaseQty": "Increase quantity of {name}",
+    "decreaseQty": "Decrease quantity of {name}",
+    "removeItem": "Remove {name} from cart"
   },
   "Checkout": {
     "orderPlaced": "Order placed",
@@ -64,7 +79,17 @@
     "noteOptional": "Note (optional)",
     "notePlaceholder": "Note for the courier...",
     "sending": "Sending...",
-    "placeOrderWithTotal": "Place order · {total}"
+    "placeOrderWithTotal": "Place order · {total}",
+    "discount": "Discount",
+    "deliveryAddress": "Delivery address",
+    "addressPlaceholder": "Enter your address",
+    "useMyLocation": "Current location",
+    "mapTitle": "Delivery map",
+    "trackOrder": "Track order",
+    "savedAddresses": "Saved addresses",
+    "selectAddress": "Select address",
+    "locating": "Locating…",
+    "locationError": "Could not determine location"
   },
   "Orders": {
     "tabActive": "Active",
@@ -94,8 +119,15 @@
     "descOnTheWay": "Courier is on the way to you",
     "statusDelivered": "Delivered",
     "descDelivered": "Order has been delivered",
-    "mapComingSoon": "Map coming soon",
-    "total": "Total"
+    "notFound": "Order not found",
+    "backToOrders": "Back to orders",
+    "total": "Total",
+    "etaSeconds": "{seconds} sec",
+    "mapTitle": "Delivery map",
+    "deliveryAddress": "Delivery address",
+    "courierOnTheWay": "Your courier is on the way",
+    "courierPreparing": "Your order is being prepared",
+    "callCourier": "Call courier"
   },
   "Profile": {
     "editAria": "Edit profile",
@@ -107,7 +139,6 @@
     "menuNotifications": "Notifications",
     "menuHelp": "Help",
     "menuSettings": "Settings",
-    "logout": "Log out",
     "editTitle": "Edit profile",
     "fullNameLabel": "Full name",
     "namePlaceholder": "Enter your name",
@@ -154,12 +185,21 @@
     "popularDish": "Popular dish",
     "quantity": "Quantity",
     "alreadyInCart": "Already in cart: {count}",
-    "addToCart": "Add to cart"
+    "addToCart": "Add to cart",
+    "goToCart": "Go to cart",
+    "itemsInCart": "{count} items",
+    "outOfStock": "Out of stock",
+    "increaseQty": "Increase quantity of {name}",
+    "decreaseQty": "Decrease quantity of {name}",
+    "imageAlt": "Photo of {name}"
   },
   "Favorites": {
     "emptyTitle": "No favorites yet",
     "emptyHint": "Add restaurants you like to your favorites",
     "viewRestaurants": "View restaurants",
+    "dishes": "Dishes",
+    "restaurants": "Restaurants",
+    "dishesCount": "{count} dishes",
     "restaurantsCount": "{count} restaurants"
   },
   "Addresses": {
@@ -193,7 +233,12 @@
     "delivery": "Delivery",
     "location": "Chilonzor, Tashkent",
     "notifications": "Notifications",
-    "clearCartConfirm": "Clear the cart?"
+    "help": "Help",
+    "clearCart": "Clear cart",
+    "clearCartConfirm": "Clear the cart?",
+    "clearCartAction": "Clear",
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "Footer": {
     "home": "Home",
@@ -203,7 +248,10 @@
     "profile": "Profile"
   },
   "FoodCard": {
-    "popular": "Popular"
+    "popular": "Popular",
+    "outOfStock": "Out of stock",
+    "increaseQty": "Increase quantity of {name}",
+    "decreaseQty": "Decrease quantity of {name}"
   },
   "RestaurantCard": {
     "free": "Free",
@@ -216,5 +264,52 @@
     "english": "English",
     "uzbek": "Uzbek",
     "russian": "Russian"
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "emptyTitle": "No notifications",
+    "emptyHint": "News and order updates will appear here",
+    "markAllRead": "Mark all as read",
+    "browse": "Browse restaurants",
+    "seedOnTheWayTitle": "Your order is on the way",
+    "seedOnTheWayBody": "Your {restaurant} order has been handed to the courier. Arriving soon.",
+    "seedPromoTitle": "HELLO50 — 50% off",
+    "seedPromoBody": "A special promo code for your first order. Enter HELLO50 in the cart.",
+    "seedNewRestaurantTitle": "New restaurant: {restaurant}",
+    "seedNewRestaurantBody": "Japanese cuisine is now available. Order the Philadelphia Roll and more.",
+    "seedDeliveredTitle": "Order delivered",
+    "seedDeliveredBody": "Your {restaurant} order was delivered successfully. Enjoyed it? Leave a review.",
+    "orderAcceptedTitle": "Your order was accepted",
+    "orderAcceptedBody": "Your {restaurant} order has been accepted and is being prepared.",
+    "onTheWayTitle": "Your order is on the way",
+    "onTheWayBody": "Your {restaurant} order has been handed to the courier and is on its way.",
+    "timeJustNow": "Just now",
+    "time5min": "5 minutes ago",
+    "time2hours": "2 hours ago",
+    "timeYesterday": "Yesterday",
+    "time2days": "2 days ago"
+  },
+  "Help": {
+    "title": "Help",
+    "faqHeading": "Frequently asked questions",
+    "q1": "How do I place an order?",
+    "a1": "Add a dish to your cart, open the cart and tap \"Place order\".",
+    "q2": "How much does delivery cost?",
+    "a2": "Delivery cost depends on the restaurant. Orders over 100,000 so'm are delivered for free.",
+    "q3": "How do I pay for my order?",
+    "a3": "Cash payment is available for now. You pay the courier when your order arrives.",
+    "q4": "Can I cancel an order?",
+    "a4": "If preparation hasn't started yet, contact support to cancel your order.",
+    "contactHeading": "Contact us",
+    "contactTelegram": "Message on Telegram",
+    "contactPhone": "Call us"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "subtitle": "An unexpected error occurred. Please try again.",
+    "retry": "Try again",
+    "backToHome": "Back to home",
+    "notFoundTitle": "Page not found",
+    "notFoundSubtitle": "The page you're looking for doesn't exist or has been moved."
   }
 }

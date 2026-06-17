@@ -1,61 +1,56 @@
 "use client";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
-import { userProfile } from "@/mock/data";
 import {
-  MapPin, Heart, Package, Settings, ChevronRight, LogOut,
+  MapPin, Heart, Package, Settings, ChevronRight,
   Bell, HelpCircle, Pencil, X,
 } from "lucide-react";
 import { Link } from "@/navigation";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useOrders } from "@/context/OrdersContext";
+import { useAuth } from "@/context/AuthContext";
+import { useDialog } from "@/shared/lib/useDialog";
 
 const menuItems = [
   { icon: Package, labelKey: "menuOrders", href: "/orders" },
   { icon: MapPin, labelKey: "menuAddresses", href: "/addresses" },
   { icon: Heart, labelKey: "menuFavorites", href: "/favorites" },
-  { icon: Bell, labelKey: "menuNotifications", href: "/profile" },
-  { icon: HelpCircle, labelKey: "menuHelp", href: "/profile" },
+  { icon: Bell, labelKey: "menuNotifications", href: "/notifications" },
+  { icon: HelpCircle, labelKey: "menuHelp", href: "/help" },
   { icon: Settings, labelKey: "menuSettings", href: "/settings" },
 ];
 
 export default function ProfilePage() {
   const t = useTranslations("Profile");
-  const [name, setName] = useState(userProfile.name);
-  const [phone, setPhone] = useState(userProfile.phone);
+  const tCommon = useTranslations("Header");
+  const { orders } = useOrders();
+  const { user, updateUser } = useAuth();
+  const ordersCount = orders.length;
+  const totalSpent = orders.reduce((sum, o) => sum + o.total, 0);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [showEdit, setShowEdit] = useState(false);
+  const closeEdit = useCallback(() => setShowEdit(false), []);
+  const { panelRef: editPanelRef, initialFocusRef: editNameRef } =
+    useDialog<HTMLDivElement, HTMLInputElement>(showEdit, closeEdit);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("user_profile");
-      if (saved) {
-        const p = JSON.parse(saved);
-        if (p.name) setName(p.name);
-        if (p.phone) setPhone(p.phone);
-      }
-    } catch {}
-  }, []);
+  // Identity always comes from the auth context (Telegram in prod, stub in dev).
+  const displayName = user.name;
+  const displayPhone = user.phone;
 
   const openEdit = () => {
-    setEditName(name);
-    setEditPhone(phone);
+    setEditName(displayName);
+    setEditPhone(displayPhone);
     setShowEdit(true);
   };
 
   const saveEdit = () => {
     if (!editName.trim()) return;
-    const n = editName.trim();
-    const ph = editPhone.trim();
-    setName(n);
-    setPhone(ph);
-    try {
-      localStorage.setItem("user_profile", JSON.stringify({ name: n, phone: ph }));
-    } catch {}
+    updateUser({ name: editName.trim(), phone: editPhone.trim() });
     setShowEdit(false);
   };
 
-  const avatarLetter = name.charAt(0).toUpperCase();
+  const avatarLetter = (displayName || "?").charAt(0).toUpperCase();
 
   return (
     <LayoutWrapper>
@@ -66,8 +61,8 @@ export default function ProfilePage() {
             <span className="text-2xl font-black text-primary-foreground">{avatarLetter}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-black text-xl text-foreground truncate">{name}</p>
-            <p className="text-sm text-muted-foreground mt-0.5">{phone}</p>
+            <p className="font-black text-xl text-foreground truncate">{displayName}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{displayPhone}</p>
           </div>
           <button
             onClick={openEdit}
@@ -81,11 +76,11 @@ export default function ProfilePage() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl border border-border p-4 text-center">
-            <p className="font-black text-2xl text-foreground">{userProfile.ordersCount}</p>
+            <p className="font-black text-2xl text-foreground">{ordersCount}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("statOrders")}</p>
           </div>
           <div className="rounded-2xl border border-border p-4 text-center">
-            <p className="font-black text-2xl text-foreground">{(userProfile.totalSpent / 1000).toFixed(0)}K</p>
+            <p className="font-black text-2xl text-foreground">{(totalSpent / 1000).toFixed(0)}K</p>
             <p className="text-xs text-muted-foreground mt-1">{t("statTotalSpent")}</p>
           </div>
         </div>
@@ -106,24 +101,25 @@ export default function ProfilePage() {
             </Link>
           ))}
         </div>
-
-        {/* Logout */}
-        <button className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border border-destructive/30 text-destructive text-sm font-semibold btn-press">
-          <LogOut className="w-4 h-4" strokeWidth={1.75} />
-          {t("logout")}
-        </button>
       </div>
 
       {/* Edit bottom sheet */}
       {showEdit && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowEdit(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl p-5 max-w-[480px] mx-auto shadow-2xl">
+          <div
+            ref={editPanelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="profile-edit-title"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl p-5 max-w-[480px] mx-auto shadow-2xl"
+          >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-lg text-foreground">{t("editTitle")}</h2>
+              <h2 id="profile-edit-title" className="font-bold text-lg text-foreground">{t("editTitle")}</h2>
               <button
                 onClick={() => setShowEdit(false)}
                 className="w-8 h-8 rounded-full border border-border flex items-center justify-center btn-press"
+                aria-label={tCommon("close")}
               >
                 <X className="w-4 h-4 text-foreground" strokeWidth={1.75} />
               </button>
@@ -132,6 +128,7 @@ export default function ProfilePage() {
               <div>
                 <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">{t("fullNameLabel")}</label>
                 <input
+                  ref={editNameRef}
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}

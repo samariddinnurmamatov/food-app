@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
 
 const FavoritesContext = createContext<{
   favorites: string[];
@@ -9,6 +9,7 @@ const FavoritesContext = createContext<{
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
@@ -17,21 +18,31 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) setFavorites(parsed);
       }
-    } catch {}
+    } catch {} finally {
+      setHydrated(true);
+    }
   }, []);
 
+  // Persist only after hydration, so the empty initial state can't wipe saved
+  // favorites before they're read (persist-before-hydrate race under StrictMode).
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
+  }, [favorites, hydrated]);
 
-  const isFavorite = (id: string) => favorites.includes(id);
-  const toggleFavorite = (id: string) =>
+  const isFavorite = useCallback((id: string) => favorites.includes(id), [favorites]);
+  const toggleFavorite = useCallback((id: string) =>
     setFavorites((prev) =>
       prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
+    ), []);
+
+  const value = useMemo(
+    () => ({ favorites, isFavorite, toggleFavorite }),
+    [favorites, isFavorite, toggleFavorite]
+  );
 
   return (
-    <FavoritesContext.Provider value={{ favorites, isFavorite, toggleFavorite }}>
+    <FavoritesContext.Provider value={value}>
       {children}
     </FavoritesContext.Provider>
   );

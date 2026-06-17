@@ -1,12 +1,39 @@
 "use client";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
 import { useCart } from "@/context/CartContext";
-import { MapPin, Bike, Store, Banknote, CreditCard, Check, CheckCircle } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "@/navigation";
+import { useOrders } from "@/context/OrdersContext";
+import { useAddresses } from "@/context/AddressContext";
+import { useNotifications } from "@/context/NotificationsContext";
+import { getRestaurantById } from "@/mock/data";
+import { Bike, Store, Banknote, CreditCard, Check, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import { cn, fmt, computeDeliveryFee } from "@/shared/lib/utils";
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+
+// Lazy-load the map block (mounts an OpenStreetMap <iframe>) so its machinery
+// stays out of the checkout initial chunk. ssr:false — it's client-only anyway.
+const LocationPicker = dynamic(
+  () => import("@/components/LocationPicker").then((m) => m.LocationPicker),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-2xl border border-border p-4 space-y-3">
+        <div className="h-5 w-32 rounded bg-secondary" />
+        <div className="h-44 rounded-2xl bg-secondary" />
+        <div className="h-10 rounded-xl bg-secondary" />
+        <div className="h-10 rounded-xl bg-secondary" />
+      </div>
+    ),
+  }
+);
+import {
+  validatePromo,
+  computePromoDiscount,
+  PROMO_STORAGE_KEY,
+  type PromoResult,
+} from "@/shared/lib/promo";
 
 type Delivery = "delivery" | "pickup";
 type Payment = "cash" | "click" | "payme";
@@ -14,21 +41,77 @@ type Payment = "cash" | "click" | "payme";
 export default function CheckoutPage() {
   const t = useTranslations("Checkout");
   const { items, total, clearCart } = useCart();
-  const router = useRouter();
+  const { addOrder } = useOrders();
+  const { addresses, defaultAddress } = useAddresses();
+  const { addNotification } = useNotifications();
+
   const [delivery, setDelivery] = useState<Delivery>("delivery");
   const [payment, setPayment] = useState<Payment>("cash");
-  const [address, setAddress] = useState("Chilonzor 12-kvartal, 5-uy");
+  const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [createdId, setCreatedId] = useState<string | null>(null);
+  const [promo, setPromo] = useState<PromoResult | null>(null);
 
-  const deliveryFee = delivery === "pickup" ? 0 : computeDeliveryFee(total);
-  const grandTotal = total + deliveryFee;
+  // Preselect the default saved address once it's hydrated (don't clobber edits).
+  useEffect(() => {
+    if (!address && defaultAddress) setAddress(defaultAddress.address);
+  }, [defaultAddress, address]);
+
+  // Read the promo applied on the cart page (shared via localStorage).
+  useEffect(() => {
+    try {
+      const code = localStorage.getItem(PROMO_STORAGE_KEY);
+      if (code) {
+        const result = validatePromo(code);
+        if (result.valid) setPromo(result);
+      }
+    } catch {}
+  }, []);
+
+  const discount = promo ? computePromoDiscount(promo, total) : 0;
+  const discountedSubtotal = total - discount;
+  const promoFreeDelivery = promo?.valid && promo.kind === "freeDelivery";
+  const deliveryFee =
+    delivery === "pickup" || promoFreeDelivery ? 0 : computeDeliveryFee(discountedSubtotal);
+  const grandTotal = discountedSubtotal + deliveryFee;
 
   const handleOrder = async () => {
+    if (items.length === 0) return;
     setLoading(true);
     await new Promise((r) => setTimeout(r, 900));
+
+    const restaurant = getRestaurantById(items[0].food.restaurantId);
+    const created = addOrder({
+      restaurantName: restaurant?.name ?? items[0].food.name,
+      restaurantImage: restaurant?.image ?? items[0].food.image ?? "",
+      restaurantId: restaurant?.id,
+      items: items.map(({ food, quantity }) => ({
+        name: food.name,
+        quantity,
+        price: food.price,
+        foodId: food.id,
+        image: food.image,
+      })),
+      total: grandTotal,
+      address,
+    });
+
+    // Notify (+ ding): order accepted. Fires from this tap, a valid user gesture,
+    // so the browser's autoplay policy lets the sound through.
+    addNotification({
+      type: "order",
+      titleKey: "orderAcceptedTitle",
+      bodyKey: "orderAcceptedBody",
+      params: { restaurant: created.restaurantName },
+    });
+
+    try {
+      localStorage.removeItem(PROMO_STORAGE_KEY);
+    } catch {}
     clearCart();
+    setCreatedId(created.id);
     setLoading(false);
     setDone(true);
   };
@@ -60,10 +143,15 @@ export default function CheckoutPage() {
               </div>
             )}
           </div>
-          <Link
-            href="/orders"
-            className="w-full max-w-[320px] py-4 rounded-full bg-primary text-primary-foreground font-bold text-center text-base btn-press"
-          >
+          {createdId && (
+            <Link
+              href={`/order/${createdId}`}
+              className="w-full max-w-[320px] py-4 rounded-full bg-primary text-primary-foreground font-bold text-center text-base btn-press"
+            >
+              {t("trackOrder")}
+            </Link>
+          )}
+          <Link href="/orders" className="text-sm text-foreground underline">
             {t("viewOrders")}
           </Link>
           <Link href="/" className="text-sm text-muted-foreground underline">
@@ -99,20 +187,33 @@ export default function CheckoutPage() {
           </button>
         </div>
 
-        {/* Address */}
+        {/* Address + map */}
         {delivery === "delivery" && (
-          <div className="rounded-2xl border border-border p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-4 h-4 text-muted-foreground" strokeWidth={1.75} />
-              <span className="text-sm font-semibold text-foreground">{t("address")}</span>
-            </div>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full bg-secondary rounded-xl px-3 py-2.5 text-sm text-foreground outline-none"
-            />
-          </div>
+          <>
+            {addresses.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-foreground">{t("savedAddresses")}</p>
+                <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 py-1">
+                  {addresses.map((a) => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setAddress(a.address)}
+                      aria-pressed={address === a.address}
+                      className={cn(
+                        "flex-shrink-0 px-4 py-2.5 rounded-2xl border text-left transition-all btn-press",
+                        address === a.address ? "border-primary bg-secondary" : "border-border"
+                      )}
+                    >
+                      <span className="block text-xs font-bold text-foreground">{a.label}</span>
+                      <span className="block text-xs text-muted-foreground max-w-[180px] truncate">{a.address}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <LocationPicker address={address} onAddressChange={setAddress} />
+          </>
         )}
 
         {/* Order summary */}
@@ -124,6 +225,12 @@ export default function CheckoutPage() {
               <span className="font-semibold text-foreground">{fmt(food.price * quantity)}</span>
             </div>
           ))}
+          {discount > 0 && (
+            <div className="pt-2 border-t border-border flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("discount")}</span>
+              <span className="font-semibold text-success">−{fmt(discount)}</span>
+            </div>
+          )}
           <div className="pt-2 border-t border-border flex justify-between text-sm">
             <span className="text-muted-foreground">{t("delivery")}</span>
             <span className="font-semibold text-foreground">{deliveryFee === 0 ? t("free") : fmt(deliveryFee)}</span>
@@ -176,7 +283,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* CTA */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-20">
+      <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe-4 bg-background border-t border-border z-20">
         <div className="max-w-[480px] mx-auto">
           <button
             onClick={handleOrder}

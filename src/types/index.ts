@@ -34,6 +34,7 @@ export interface FoodItem {
   isPopular: boolean;
   isAvailable: boolean;
   rating?: number;
+  weight?: string; // portion/weight label, e.g. "350 g", "0.5 L", "30 sm"
 }
 
 export interface CartItem {
@@ -45,7 +46,8 @@ export interface Order {
   id: string;
   restaurantName: string;
   restaurantImage: string;
-  items: { name: string; quantity: number; price: number }[];
+  restaurantId?: string;
+  items: { name: string; quantity: number; price: number; foodId?: string; image?: string }[];
   total: number;
   status: "pending" | "preparing" | "on_the_way" | "delivered" | "cancelled";
   createdAt: string;

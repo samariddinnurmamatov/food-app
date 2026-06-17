@@ -1,4 +1,6 @@
 "use client";
+import { memo } from "react";
+import Image from "next/image";
 import type { Restaurant } from "@/types";
 import { Star, Clock, Bike, Heart, UtensilsCrossed } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesContext";
@@ -11,7 +13,7 @@ interface Props {
   compact?: boolean;
 }
 
-export function RestaurantCard({ restaurant, compact = false }: Props) {
+export const RestaurantCard = memo(function RestaurantCard({ restaurant, compact = false }: Props) {
   const t = useTranslations("RestaurantCard");
   const { isFavorite, toggleFavorite } = useFavorites();
   const fav = isFavorite(restaurant.id);
@@ -33,7 +35,7 @@ export function RestaurantCard({ restaurant, compact = false }: Props) {
         <div className="flex gap-3 py-4 border-b border-border">
           <div className="w-20 h-20 rounded-2xl bg-secondary flex-shrink-0 overflow-hidden relative">
             {restaurant.image ? (
-              <img src={restaurant.image} alt={restaurant.name} className="w-full h-full object-cover" />
+              <Image src={restaurant.image} alt={restaurant.name} fill sizes="80px" className="object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <UtensilsCrossed className="w-7 h-7 text-muted-foreground" strokeWidth={1.5} />
@@ -74,9 +76,9 @@ export function RestaurantCard({ restaurant, compact = false }: Props) {
   return (
     <Link href={`/restaurant/${restaurant.id}`} className="block mb-3">
       <div className="rounded-2xl overflow-hidden border border-border bg-card">
-        <div className="relative h-48 bg-secondary">
+        <div className="relative h-48 bg-secondary overflow-hidden">
           {restaurant.image ? (
-            <img src={restaurant.image} alt={restaurant.name} className="w-full h-full object-cover" />
+            <Image src={restaurant.image} alt={restaurant.name} fill sizes="(max-width: 480px) 100vw, 480px" className="object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="w-10 h-10 text-muted-foreground" strokeWidth={1.25} />
@@ -89,6 +91,8 @@ export function RestaurantCard({ restaurant, compact = false }: Props) {
           )}
           <button
             onClick={handleFav}
+            aria-label={restaurant.name}
+            aria-pressed={fav}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background shadow flex items-center justify-center"
           >
             <Heart
@@ -131,4 +135,4 @@ export function RestaurantCard({ restaurant, compact = false }: Props) {
       </div>
     </Link>
   );
-}
+});

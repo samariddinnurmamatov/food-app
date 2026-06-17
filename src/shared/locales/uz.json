@@ -9,19 +9,23 @@
     "allCount": "Hammasi {count} ta",
     "emptyCategory": "Bu kategoriyada hech narsa topilmadi",
     "viewAll": "Barchasini ko'rish",
-    "promo1Tag": "Maxsus taklif",
-    "promo1Desc": "Birinchi buyurtmangizga chegirma",
-    "promo1Btn": "Buyurtma berish",
-    "promo2Tag": "Evos aksiyasi",
-    "promo2Desc": "Sevimli taomlaringizga chegirma",
-    "promo2Btn": "Ko'rish",
-    "promo3Tag": "Bepul yetkazib berish",
-    "promo3Discount": "0 so'm",
-    "promo3Desc": "100 000 so'mdan yuqori buyurtmalarga",
-    "promo3Btn": "Buyurtma berish",
+    "banner1Title": "Birinchi buyurtmaga −50%",
+    "banner1Subtitle": "Sevimli taomlaringizni arzon narxda buyurtma qiling",
+    "banner1Cta": "Buyurtma berish",
+    "banner2Title": "Evos −20%",
+    "banner2Subtitle": "Mashhur burger va lavashlarga chegirma",
+    "banner2Cta": "Ko'rish",
+    "banner3Title": "Bepul yetkazib berish",
+    "banner3Subtitle": "100 000 so'mdan yuqori barcha buyurtmalarga",
+    "banner3Cta": "Buyurtma berish",
+    "banner4Title": "Yangi taomlar har kuni",
+    "banner4Subtitle": "Eng yaxshi oshxonalardan yangi takliflar",
+    "banner4Cta": "Kashf qilish",
     "addToCart": "Savatga qo’shish",
     "order": "Buyurtma berish",
-    "cartItems": "{count} ta taom"
+    "cartItems": "{count} ta taom",
+    "increaseQty": "{name} sonini oshirish",
+    "decreaseQty": "{name} sonini kamaytirish"
   },
   "Search": {
     "placeholder": "Qidirish...",
@@ -39,6 +43,8 @@
     "freeDelivery": "Bepul yetkazib berish",
     "freeDeliveryHintPrefix": "Bepul yetkazib berishgacha",
     "freeDeliveryHintSuffix": "qoldi",
+    "freeDeliveryReached": "Yetkazib berish bepul ✓",
+    "freeDeliveryProgress": "Yana <b>{amount}</b> qo'shsangiz — yetkazish bepul",
     "itemsCount": "{count} ta mahsulot",
     "promoPlaceholder": "Promokod",
     "apply": "Qo'llash",
@@ -46,7 +52,16 @@
     "delivery": "Yetkazib berish",
     "free": "Bepul",
     "total": "Jami",
-    "checkout": "Buyurtma berish"
+    "checkout": "Buyurtma berish",
+    "discount": "Chegirma",
+    "promoAppliedPercent": "Promokod qoʻllandi · {code} −{percent}%",
+    "promoAppliedFreeDelivery": "Promokod qoʻllandi · {code} · bepul yetkazib berish",
+    "promoInvalid": "Notoʻgʻri promokod",
+    "promoRemove": "Promokodni olib tashlash",
+    "availablePromos": "Mavjud kodlar",
+    "increaseQty": "{name} sonini oshirish",
+    "decreaseQty": "{name} sonini kamaytirish",
+    "removeItem": "{name} ni savatdan olib tashlash"
   },
   "Checkout": {
     "orderPlaced": "Buyurtma qabul qilindi",
@@ -64,7 +79,17 @@
     "noteOptional": "Izoh (ixtiyoriy)",
     "notePlaceholder": "Kuryer uchun izoh...",
     "sending": "Yuborilmoqda...",
-    "placeOrderWithTotal": "Buyurtma berish · {total}"
+    "placeOrderWithTotal": "Buyurtma berish · {total}",
+    "discount": "Chegirma",
+    "deliveryAddress": "Yetkazib beriladigan manzil",
+    "addressPlaceholder": "Manzilingizni kiriting",
+    "useMyLocation": "Joriy joylashuv",
+    "mapTitle": "Yetkazib berish xaritasi",
+    "trackOrder": "Buyurtmani kuzatish",
+    "savedAddresses": "Saqlangan manzillar",
+    "selectAddress": "Manzilni tanlang",
+    "locating": "Aniqlanmoqda…",
+    "locationError": "Joylashuvni aniqlab bo'lmadi"
   },
   "Orders": {
     "tabActive": "Faol",
@@ -94,8 +119,15 @@
     "descOnTheWay": "Kuryer sizga yo'lda",
     "statusDelivered": "Yetkazildi",
     "descDelivered": "Buyurtma yetkazib berildi",
-    "mapComingSoon": "Xarita tez orada",
-    "total": "Jami"
+    "notFound": "Buyurtma topilmadi",
+    "backToOrders": "Buyurtmalarga qaytish",
+    "total": "Jami",
+    "etaSeconds": "{seconds} soniya",
+    "mapTitle": "Yetkazib berish xaritasi",
+    "deliveryAddress": "Yetkazib beriladigan manzil",
+    "courierOnTheWay": "Kuryeringiz yo'lda",
+    "courierPreparing": "Buyurtmangiz tayyorlanmoqda",
+    "callCourier": "Kuryerga qo'ng'iroq qilish"
   },
   "Profile": {
     "editAria": "Profilni tahrirlash",
@@ -107,7 +139,6 @@
     "menuNotifications": "Bildirishnomalar",
     "menuHelp": "Yordam",
     "menuSettings": "Sozlamalar",
-    "logout": "Chiqish",
     "editTitle": "Profilni tahrirlash",
     "fullNameLabel": "To'liq ism",
     "namePlaceholder": "Ismingizni kiriting",
@@ -154,12 +185,21 @@
     "popularDish": "Mashhur taom",
     "quantity": "Miqdor",
     "alreadyInCart": "Savatda allaqachon {count} ta bor",
-    "addToCart": "Savatga qo'shish"
+    "addToCart": "Savatga qo'shish",
+    "goToCart": "Savatga o’tish",
+    "itemsInCart": "{count} ta",
+    "outOfStock": "Tugagan",
+    "increaseQty": "{name} sonini oshirish",
+    "decreaseQty": "{name} sonini kamaytirish",
+    "imageAlt": "{name} rasmi"
   },
   "Favorites": {
     "emptyTitle": "Sevimlilar bo'sh",
     "emptyHint": "Yoqtirgan oshxonalaringizni sevimlilarga qo'shing",
     "viewRestaurants": "Oshxonalarni ko'rish",
+    "dishes": "Taomlar",
+    "restaurants": "Oshxonalar",
+    "dishesCount": "{count} ta taom",
     "restaurantsCount": "{count} ta oshxona"
   },
   "Addresses": {
@@ -193,7 +233,12 @@
     "delivery": "Yetkazib berish",
     "location": "Chilonzor, Toshkent",
     "notifications": "Bildirishnomalar",
-    "clearCartConfirm": "Savatni tozalamoqchimisiz?"
+    "help": "Yordam",
+    "clearCart": "Savatni tozalash",
+    "clearCartConfirm": "Savatni tozalamoqchimisiz?",
+    "clearCartAction": "Tozalash",
+    "cancel": "Bekor qilish",
+    "close": "Yopish"
   },
   "Footer": {
     "home": "Bosh sahifa",
@@ -203,7 +248,10 @@
     "profile": "Profil"
   },
   "FoodCard": {
-    "popular": "Mashhur"
+    "popular": "Mashhur",
+    "outOfStock": "Tugagan",
+    "increaseQty": "{name} sonini oshirish",
+    "decreaseQty": "{name} sonini kamaytirish"
   },
   "RestaurantCard": {
     "free": "Tekin",
@@ -216,5 +264,52 @@
     "english": "Inglizcha",
     "uzbek": "O’zbekcha",
     "russian": "Ruscha"
+  },
+  "Notifications": {
+    "title": "Bildirishnomalar",
+    "emptyTitle": "Bildirishnomalar yo'q",
+    "emptyHint": "Yangiliklar va buyurtma holati shu yerda ko'rinadi",
+    "markAllRead": "Hammasini o'qilgan deb belgilash",
+    "browse": "Oshxonalarni ko'rish",
+    "seedOnTheWayTitle": "Buyurtmangiz yo'lda",
+    "seedOnTheWayBody": "{restaurant} buyurtmangiz kuryerga topshirildi. Tez orada yetkaziladi.",
+    "seedPromoTitle": "HELLO50 — 50% chegirma",
+    "seedPromoBody": "Birinchi buyurtmangizga maxsus promokod. Savatda HELLO50 kodini kiriting.",
+    "seedNewRestaurantTitle": "Yangi oshxona: {restaurant}",
+    "seedNewRestaurantBody": "Yapon taomlari endi mavjud. Philadelphia Roll va boshqa rollarni buyurtma qiling.",
+    "seedDeliveredTitle": "Buyurtma yetkazildi",
+    "seedDeliveredBody": "{restaurant} buyurtmangiz muvaffaqiyatli yetkazib berildi. Yoqdimi? Baho qoldiring.",
+    "orderAcceptedTitle": "Buyurtmangiz qabul qilindi",
+    "orderAcceptedBody": "{restaurant} buyurtmangiz qabul qilindi va tayyorlanmoqda.",
+    "onTheWayTitle": "Buyurtmangiz yo'lda",
+    "onTheWayBody": "{restaurant} buyurtmangiz kuryerga topshirildi va sizga yetkazilmoqda.",
+    "timeJustNow": "Hozir",
+    "time5min": "5 daqiqa oldin",
+    "time2hours": "2 soat oldin",
+    "timeYesterday": "Kecha",
+    "time2days": "2 kun oldin"
+  },
+  "Help": {
+    "title": "Yordam",
+    "faqHeading": "Ko'p so'raladigan savollar",
+    "q1": "Buyurtmani qanday beraman?",
+    "a1": "Taomni savatga qo'shing, savatga o'ting va \"Buyurtma berish\" tugmasini bosing.",
+    "q2": "Yetkazib berish qancha turadi?",
+    "a2": "Yetkazib berish narxi oshxonaga bog'liq. 100 000 so'mdan yuqori buyurtmalar bepul yetkaziladi.",
+    "q3": "To'lovni qanday amalga oshiraman?",
+    "a3": "Hozircha naqd pul orqali to'lov mavjud. Kuryerga buyurtmani qabul qilganda to'laysiz.",
+    "q4": "Buyurtmani bekor qila olamanmi?",
+    "a4": "Tayyorlash boshlanmagan bo'lsa, qo'llab-quvvatlash xizmatiga murojaat qilib bekor qilishingiz mumkin.",
+    "contactHeading": "Bog'lanish",
+    "contactTelegram": "Telegram orqali yozish",
+    "contactPhone": "Qo'ng'iroq qilish"
+  },
+  "Error": {
+    "title": "Nimadir xato ketdi",
+    "subtitle": "Kutilmagan xatolik yuz berdi. Qaytadan urinib ko'ring.",
+    "retry": "Qayta urinish",
+    "backToHome": "Bosh sahifaga qaytish",
+    "notFoundTitle": "Sahifa topilmadi",
+    "notFoundSubtitle": "Siz qidirgan sahifa mavjud emas yoki ko'chirilgan."
   }
 }

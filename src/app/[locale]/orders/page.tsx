@@ -1,12 +1,14 @@
 "use client";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
-import { orders, restaurants } from "@/mock/data";
+import { getFoodById } from "@/mock/data";
 import { Clock, ChevronRight, Package } from "lucide-react";
-import { Link } from "@/navigation";
+import { Link, useRouter } from "@/navigation";
 import { useState } from "react";
-import { cn, fmt, fmtDate } from "@/shared/lib/utils";
-import { useTranslations } from "next-intl";
+import { cn, fmt, fmtDate, sized } from "@/shared/lib/utils";
+import { useTranslations, useLocale } from "next-intl";
 import type { Order } from "@/types";
+import { useOrders } from "@/context/OrdersContext";
+import { useCart } from "@/context/CartContext";
 
 const statusLabelKey: Record<Order["status"], string> = {
   pending: "statusPending",
@@ -24,18 +26,29 @@ const statusColor: Record<Order["status"], string> = {
   cancelled: "text-destructive",
 };
 
-function getRestaurantHref(restaurantName: string): string {
-  const r = restaurants.find((r) => r.name === restaurantName);
-  return r ? `/restaurant/${r.id}` : "/";
-}
-
 export default function OrdersPage() {
   const t = useTranslations("Orders");
+  const locale = useLocale();
+  const router = useRouter();
+  const { orders } = useOrders();
+  const { addItem } = useCart();
   const [tab, setTab] = useState<"active" | "history">("active");
 
-  const active = orders.filter((o) => ["pending", "preparing", "on_the_way"].includes(o.status));
-  const history = orders.filter((o) => ["delivered", "cancelled"].includes(o.status));
+  const sorted = [...orders].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const active = sorted.filter((o) => ["pending", "preparing", "on_the_way"].includes(o.status));
+  const history = sorted.filter((o) => ["delivered", "cancelled"].includes(o.status));
   const list = tab === "active" ? active : history;
+
+  const reorder = (order: Order) => {
+    for (const item of order.items) {
+      if (!item.foodId) continue;
+      const food = getFoodById(item.foodId);
+      if (food) addItem(food, item.quantity);
+    }
+    router.push("/cart");
+  };
 
   return (
     <LayoutWrapper>
@@ -80,14 +93,14 @@ export default function OrdersPage() {
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-xl bg-secondary overflow-hidden flex-shrink-0">
                     {order.restaurantImage && (
-                      <img src={order.restaurantImage} alt={order.restaurantName} className="w-full h-full object-cover" />
+                      <img src={sized(order.restaurantImage, 80)} alt={order.restaurantName} width={40} height={40} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm text-card-foreground">{order.restaurantName}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <Clock className="w-3 h-3 text-muted-foreground" strokeWidth={1.75} />
-                      <span className="text-xs text-muted-foreground">{fmtDate(order.createdAt)}</span>
+                      <span className="text-xs text-muted-foreground">{fmtDate(order.createdAt, locale)}</span>
                     </div>
                   </div>
                   <span className={cn("text-xs font-bold", statusColor[order.status])}>
@@ -111,12 +124,12 @@ export default function OrdersPage() {
                       {t("track")} <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />
                     </Link>
                   ) : (
-                    <Link
-                      href={getRestaurantHref(order.restaurantName)}
+                    <button
+                      onClick={() => reorder(order)}
                       className="px-3 py-1.5 rounded-xl border border-border text-xs font-semibold text-foreground btn-press"
                     >
                       {t("reorder")}
-                    </Link>
+                    </button>
                   )}
                 </div>
               </div>

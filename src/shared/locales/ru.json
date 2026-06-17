@@ -9,19 +9,23 @@
     "allCount": "Все {count}",
     "emptyCategory": "В этой категории ничего не найдено",
     "viewAll": "Смотреть все",
-    "promo1Tag": "Спецпредложение",
-    "promo1Desc": "Скидка на первый заказ",
-    "promo1Btn": "Оформить заказ",
-    "promo2Tag": "Акция Evos",
-    "promo2Desc": "Скидка на любимые блюда",
-    "promo2Btn": "Смотреть",
-    "promo3Tag": "Бесплатная доставка",
-    "promo3Discount": "0 сум",
-    "promo3Desc": "На заказы от 100 000 сум",
-    "promo3Btn": "Оформить заказ",
+    "banner1Title": "−50% на первый заказ",
+    "banner1Subtitle": "Закажите любимые блюда по выгодной цене",
+    "banner1Cta": "Оформить заказ",
+    "banner2Title": "Evos −20%",
+    "banner2Subtitle": "Скидка на популярные бургеры и лаваши",
+    "banner2Cta": "Смотреть",
+    "banner3Title": "Бесплатная доставка",
+    "banner3Subtitle": "На все заказы от 100 000 сум",
+    "banner3Cta": "Оформить заказ",
+    "banner4Title": "Новые блюда каждый день",
+    "banner4Subtitle": "Свежие предложения от лучших ресторанов",
+    "banner4Cta": "Открыть",
     "addToCart": "В корзину",
     "order": "Оформить заказ",
-    "cartItems": "{count} блюд"
+    "cartItems": "{count} блюд",
+    "increaseQty": "Увеличить количество: {name}",
+    "decreaseQty": "Уменьшить количество: {name}"
   },
   "Search": {
     "placeholder": "Искать...",
@@ -39,6 +43,8 @@
     "freeDelivery": "Бесплатная доставка",
     "freeDeliveryHintPrefix": "До бесплатной доставки осталось",
     "freeDeliveryHintSuffix": "",
+    "freeDeliveryReached": "Доставка бесплатная ✓",
+    "freeDeliveryProgress": "Добавьте ещё <b>{amount}</b> — доставка бесплатно",
     "itemsCount": "{count} товаров",
     "promoPlaceholder": "Промокод",
     "apply": "Применить",
@@ -46,7 +52,16 @@
     "delivery": "Доставка",
     "free": "Бесплатно",
     "total": "Итого",
-    "checkout": "Оформить заказ"
+    "checkout": "Оформить заказ",
+    "discount": "Скидка",
+    "promoAppliedPercent": "Промокод применён · {code} −{percent}%",
+    "promoAppliedFreeDelivery": "Промокод применён · {code} · бесплатная доставка",
+    "promoInvalid": "Неверный промокод",
+    "promoRemove": "Убрать промокод",
+    "availablePromos": "Доступные коды",
+    "increaseQty": "Увеличить количество: {name}",
+    "decreaseQty": "Уменьшить количество: {name}",
+    "removeItem": "Удалить из корзины: {name}"
   },
   "Checkout": {
     "orderPlaced": "Заказ принят",
@@ -64,7 +79,17 @@
     "noteOptional": "Комментарий (необязательно)",
     "notePlaceholder": "Комментарий для курьера...",
     "sending": "Отправка...",
-    "placeOrderWithTotal": "Оформить заказ · {total}"
+    "placeOrderWithTotal": "Оформить заказ · {total}",
+    "discount": "Скидка",
+    "deliveryAddress": "Адрес доставки",
+    "addressPlaceholder": "Введите ваш адрес",
+    "useMyLocation": "Текущее местоположение",
+    "mapTitle": "Карта доставки",
+    "trackOrder": "Отслеживать заказ",
+    "savedAddresses": "Сохранённые адреса",
+    "selectAddress": "Выберите адрес",
+    "locating": "Определение…",
+    "locationError": "Не удалось определить местоположение"
   },
   "Orders": {
     "tabActive": "Активные",
@@ -94,8 +119,15 @@
     "descOnTheWay": "Курьер уже в пути к вам",
     "statusDelivered": "Доставлено",
     "descDelivered": "Заказ доставлен",
-    "mapComingSoon": "Карта скоро появится",
-    "total": "Итого"
+    "notFound": "Заказ не найден",
+    "backToOrders": "Вернуться к заказам",
+    "total": "Итого",
+    "etaSeconds": "{seconds} сек",
+    "mapTitle": "Карта доставки",
+    "deliveryAddress": "Адрес доставки",
+    "courierOnTheWay": "Ваш курьер в пути",
+    "courierPreparing": "Ваш заказ готовится",
+    "callCourier": "Позвонить курьеру"
   },
   "Profile": {
     "editAria": "Редактировать профиль",
@@ -107,7 +139,6 @@
     "menuNotifications": "Уведомления",
     "menuHelp": "Помощь",
     "menuSettings": "Настройки",
-    "logout": "Выйти",
     "editTitle": "Редактировать профиль",
     "fullNameLabel": "Полное имя",
     "namePlaceholder": "Введите имя",
@@ -154,12 +185,21 @@
     "popularDish": "Популярное блюдо",
     "quantity": "Количество",
     "alreadyInCart": "Уже в корзине: {count} шт.",
-    "addToCart": "Добавить в корзину"
+    "addToCart": "Добавить в корзину",
+    "goToCart": "В корзину",
+    "itemsInCart": "{count} шт",
+    "outOfStock": "Нет в наличии",
+    "increaseQty": "Увеличить количество: {name}",
+    "decreaseQty": "Уменьшить количество: {name}",
+    "imageAlt": "Фото: {name}"
   },
   "Favorites": {
     "emptyTitle": "Избранное пусто",
     "emptyHint": "Добавляйте понравившиеся рестораны в избранное",
     "viewRestaurants": "Смотреть рестораны",
+    "dishes": "Блюда",
+    "restaurants": "Рестораны",
+    "dishesCount": "{count} блюд",
     "restaurantsCount": "{count} ресторанов"
   },
   "Addresses": {
@@ -193,7 +233,12 @@
     "delivery": "Доставка",
     "location": "Чиланзар, Ташкент",
     "notifications": "Уведомления",
-    "clearCartConfirm": "Очистить корзину?"
+    "help": "Помощь",
+    "clearCart": "Очистить корзину",
+    "clearCartConfirm": "Очистить корзину?",
+    "clearCartAction": "Очистить",
+    "cancel": "Отмена",
+    "close": "Закрыть"
   },
   "Footer": {
     "home": "Главная",
@@ -203,7 +248,10 @@
     "profile": "Профиль"
   },
   "FoodCard": {
-    "popular": "Популярное"
+    "popular": "Популярное",
+    "outOfStock": "Нет в наличии",
+    "increaseQty": "Увеличить количество: {name}",
+    "decreaseQty": "Уменьшить количество: {name}"
   },
   "RestaurantCard": {
     "free": "Бесплатно",
@@ -216,5 +264,52 @@
     "english": "Английский",
     "uzbek": "Узбекский",
     "russian": "Русский"
+  },
+  "Notifications": {
+    "title": "Уведомления",
+    "emptyTitle": "Нет уведомлений",
+    "emptyHint": "Новости и статус заказа появятся здесь",
+    "markAllRead": "Отметить всё прочитанным",
+    "browse": "Смотреть рестораны",
+    "seedOnTheWayTitle": "Ваш заказ в пути",
+    "seedOnTheWayBody": "Заказ из {restaurant} передан курьеру. Скоро будет доставлен.",
+    "seedPromoTitle": "HELLO50 — скидка 50%",
+    "seedPromoBody": "Специальный промокод на первый заказ. Введите HELLO50 в корзине.",
+    "seedNewRestaurantTitle": "Новый ресторан: {restaurant}",
+    "seedNewRestaurantBody": "Японская кухня теперь доступна. Закажите Philadelphia Roll и другие роллы.",
+    "seedDeliveredTitle": "Заказ доставлен",
+    "seedDeliveredBody": "Заказ из {restaurant} успешно доставлен. Понравилось? Оставьте отзыв.",
+    "orderAcceptedTitle": "Ваш заказ принят",
+    "orderAcceptedBody": "Заказ из {restaurant} принят и готовится.",
+    "onTheWayTitle": "Ваш заказ в пути",
+    "onTheWayBody": "Заказ из {restaurant} передан курьеру и едет к вам.",
+    "timeJustNow": "Только что",
+    "time5min": "5 минут назад",
+    "time2hours": "2 часа назад",
+    "timeYesterday": "Вчера",
+    "time2days": "2 дня назад"
+  },
+  "Help": {
+    "title": "Помощь",
+    "faqHeading": "Часто задаваемые вопросы",
+    "q1": "Как оформить заказ?",
+    "a1": "Добавьте блюдо в корзину, перейдите в неё и нажмите «Оформить заказ».",
+    "q2": "Сколько стоит доставка?",
+    "a2": "Стоимость доставки зависит от ресторана. Заказы от 100 000 сум доставляются бесплатно.",
+    "q3": "Как оплатить заказ?",
+    "a3": "Пока доступна оплата наличными. Вы платите курьеру при получении заказа.",
+    "q4": "Можно ли отменить заказ?",
+    "a4": "Если приготовление ещё не началось, обратитесь в поддержку, чтобы отменить заказ.",
+    "contactHeading": "Связаться с нами",
+    "contactTelegram": "Написать в Telegram",
+    "contactPhone": "Позвонить"
+  },
+  "Error": {
+    "title": "Что-то пошло не так",
+    "subtitle": "Произошла непредвиденная ошибка. Попробуйте снова.",
+    "retry": "Повторить",
+    "backToHome": "Вернуться на главную",
+    "notFoundTitle": "Страница не найдена",
+    "notFoundSubtitle": "Запрашиваемая страница не существует или была перемещена."
   }
 }

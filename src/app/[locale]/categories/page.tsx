@@ -2,7 +2,7 @@
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import { FoodCard } from "@/components/FoodCard";
-import { categories, restaurants, foodItems } from "@/mock/data";
+import { categories, restaurants, foodItems, getFoodsByCategory } from "@/mock/data";
 import { Search, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -12,15 +12,23 @@ export default function CategoriesPage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  const q = query.trim().toLowerCase();
+
   const filteredRestaurants = restaurants.filter((r) => {
     const matchCat = !activeCategory || r.categoryId === activeCategory;
-    const matchQ = !query || r.name.toLowerCase().includes(query.toLowerCase()) || r.cuisine.toLowerCase().includes(query.toLowerCase());
+    const matchQ = !q || r.name.toLowerCase().includes(q) || r.cuisine.toLowerCase().includes(q);
     return matchCat && matchQ;
   });
 
-  const filteredFoods = foodItems.filter((f) =>
-    query ? f.name.toLowerCase().includes(query.toLowerCase()) || f.description.toLowerCase().includes(query.toLowerCase()) : false
+  // Base set of dishes for the active category (or all when none is active),
+  // then narrowed by the text query if there is one.
+  const categoryFoods = activeCategory ? getFoodsByCategory(activeCategory) : foodItems;
+  const filteredFoods = categoryFoods.filter((f) =>
+    !q ? true : f.name.toLowerCase().includes(q) || f.description.toLowerCase().includes(q)
   );
+
+  // Show the results layout (dishes + restaurants) whenever the user is filtering.
+  const isFiltering = Boolean(q) || Boolean(activeCategory);
 
   return (
     <LayoutWrapper>
@@ -66,12 +74,14 @@ export default function CategoriesPage() {
         )}
 
         {/* Results */}
-        {query ? (
-          <div className="space-y-4">
+        {isFiltering ? (
+          <div className="space-y-5">
             {filteredFoods.length > 0 && (
               <div>
-                <p className="text-xs text-muted-foreground mb-2">{t("dishesCount", { count: filteredFoods.length })}</p>
-                {filteredFoods.map((f) => <FoodCard key={f.id} food={f} compact />)}
+                <p className="text-xs text-muted-foreground mb-3">{t("dishesCount", { count: filteredFoods.length })}</p>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-5">
+                  {filteredFoods.map((f) => <FoodCard key={f.id} food={f} variant="grid" />)}
+                </div>
               </div>
             )}
             {filteredRestaurants.length > 0 && (
@@ -83,15 +93,13 @@ export default function CategoriesPage() {
             {filteredFoods.length === 0 && filteredRestaurants.length === 0 && (
               <div className="py-16 text-center">
                 <p className="font-bold text-foreground">{t("nothingFound")}</p>
-                <p className="text-sm text-muted-foreground mt-1">{t("noResultsFor", { query })}</p>
+                {q && <p className="text-sm text-muted-foreground mt-1">{t("noResultsFor", { query })}</p>}
               </div>
             )}
           </div>
         ) : (
           <div>
-            <p className="text-xs text-muted-foreground mb-2">
-              {activeCategory ? t("restaurantsCount", { count: filteredRestaurants.length }) : t("allRestaurants")}
-            </p>
+            <p className="text-xs text-muted-foreground mb-2">{t("allRestaurants")}</p>
             {filteredRestaurants.map((r) => <RestaurantCard key={r.id} restaurant={r} compact />)}
           </div>
         )}

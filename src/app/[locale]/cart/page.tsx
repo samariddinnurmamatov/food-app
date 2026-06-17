@@ -1,17 +1,41 @@
 "use client";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
 import { useCart } from "@/context/CartContext";
-import { Plus, Minus, Trash2, ShoppingBag, UtensilsCrossed, Bike } from "lucide-react";
+import { Plus, Minus, Trash2, ShoppingBag, UtensilsCrossed } from "lucide-react";
 import { Link } from "@/navigation";
-import { fmt, computeDeliveryFee, FREE_DELIVERY_THRESHOLD } from "@/shared/lib/utils";
+import { fmt, sized, computeDeliveryFee } from "@/shared/lib/utils";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+import { PromoInput } from "@/components/PromoInput";
+import { DeliveryProgress } from "@/components/DeliveryProgress";
+import {
+  computePromoDiscount,
+  validatePromo,
+  PROMO_STORAGE_KEY,
+  type PromoResult,
+} from "@/shared/lib/promo";
 
 export default function CartPage() {
   const t = useTranslations("Cart");
   const { items, total, totalItems, updateQuantity, removeItem } = useCart();
+  const [promo, setPromo] = useState<PromoResult | null>(null);
 
-  const deliveryFee = computeDeliveryFee(total);
-  const grandTotal = total + deliveryFee;
+  // Re-hydrate the applied promo on mount so it persists across navigation.
+  useEffect(() => {
+    try {
+      const code = localStorage.getItem(PROMO_STORAGE_KEY);
+      if (code) {
+        const result = validatePromo(code);
+        if (result.valid) setPromo(result);
+      }
+    } catch {}
+  }, []);
+
+  const discount = promo ? computePromoDiscount(promo, total) : 0;
+  const discountedSubtotal = total - discount;
+  const freeDelivery = promo?.valid && promo.kind === "freeDelivery";
+  const deliveryFee = freeDelivery ? 0 : computeDeliveryFee(discountedSubtotal);
+  const grandTotal = discountedSubtotal + deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -35,21 +59,8 @@ export default function CartPage() {
   return (
     <LayoutWrapper>
       <div className="px-4 max-w-[480px] mx-auto pt-3 pb-6">
-        {/* Delivery info banner */}
-        <div className="flex items-center gap-2 mb-4 p-3 bg-secondary rounded-2xl">
-          <Bike className="w-4 h-4 text-muted-foreground flex-shrink-0" strokeWidth={1.75} />
-          {deliveryFee === 0 ? (
-            <span className="text-sm text-foreground font-semibold">{t("freeDelivery")} ✓</span>
-          ) : (
-            <span className="text-sm text-muted-foreground">
-              {t("freeDeliveryHintPrefix")}{" "}
-              <span className="font-bold text-foreground">
-                {fmt(FREE_DELIVERY_THRESHOLD - total)}
-              </span>{" "}
-              {t("freeDeliveryHintSuffix")}
-            </span>
-          )}
-        </div>
+        {/* Delivery progress toward free delivery */}
+        <DeliveryProgress subtotal={discountedSubtotal} />
 
         <p className="text-xs text-muted-foreground mb-3">{t("itemsCount", { count: totalItems })}</p>
 
@@ -59,7 +70,7 @@ export default function CartPage() {
             <div key={food.id} className="flex gap-3 p-3 rounded-2xl border border-border bg-card">
               <div className="w-16 h-16 rounded-xl bg-secondary overflow-hidden flex-shrink-0">
                 {food.image ? (
-                  <img src={food.image} alt={food.name} className="w-full h-full object-cover" />
+                  <img src={sized(food.image, 128)} alt={food.name} width={64} height={64} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <UtensilsCrossed className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
@@ -74,6 +85,7 @@ export default function CartPage() {
                 <div className="flex items-center gap-3 mt-2">
                   <button
                     onClick={() => updateQuantity(food.id, quantity - 1)}
+                    aria-label={t("decreaseQty", { name: food.name })}
                     className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center btn-press"
                   >
                     <Minus className="w-3.5 h-3.5 text-foreground" strokeWidth={2} />
@@ -81,6 +93,7 @@ export default function CartPage() {
                   <span className="font-bold text-sm text-foreground w-4 text-center">{quantity}</span>
                   <button
                     onClick={() => updateQuantity(food.id, quantity + 1)}
+                    aria-label={t("increaseQty", { name: food.name })}
                     className="w-7 h-7 rounded-full bg-primary flex items-center justify-center btn-press"
                   >
                     <Plus className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={2} />
@@ -89,6 +102,7 @@ export default function CartPage() {
               </div>
               <button
                 onClick={() => removeItem(food.id)}
+                aria-label={t("removeItem", { name: food.name })}
                 className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center self-start flex-shrink-0 btn-press"
               >
                 <Trash2 className="w-3.5 h-3.5 text-muted-foreground" strokeWidth={1.75} />
@@ -98,16 +112,7 @@ export default function CartPage() {
         </div>
 
         {/* Promo code */}
-        <div className="flex gap-2 mb-5">
-          <input
-            type="text"
-            placeholder={t("promoPlaceholder")}
-            className="flex-1 bg-secondary rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
-          />
-          <button className="px-5 py-3 rounded-2xl border border-border text-sm font-bold text-foreground btn-press">
-            {t("apply")}
-          </button>
-        </div>
+        <PromoInput applied={promo} onChange={setPromo} />
 
         {/* Summary */}
         <div className="rounded-2xl border border-border p-4 space-y-3 mb-5">
@@ -115,6 +120,12 @@ export default function CartPage() {
             <span className="text-muted-foreground">{t("items")}</span>
             <span className="font-semibold text-foreground">{fmt(total)}</span>
           </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t("discount")}</span>
+              <span className="font-semibold text-success">−{fmt(discount)}</span>
+            </div>
+          )}
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("delivery")}</span>
             <span className="font-semibold text-foreground">

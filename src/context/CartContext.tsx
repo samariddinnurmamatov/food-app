@@ -1,6 +1,33 @@
 "use client";
-import { createContext, useContext, useReducer, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useReducer, useState, useEffect, useCallback, useMemo, type ReactNode } from "react";
 import type { CartItem, FoodItem } from "@/types";
+import { getFoodById } from "@/mock/data";
+
+// Bumped from "cart_items" so any old-shape payload under the old key is ignored,
+// not trusted, after the hydration reconciliation logic changed.
+const STORAGE_KEY = "cart_items_v2";
+
+// Reconcile a raw localStorage payload against live mock data:
+// - drop malformed entries (missing food/id, non-positive quantity)
+// - drop items whose food id no longer exists in the catalog
+// - refresh the food snapshot (price/name/image/availability) from mock,
+//   keeping only the stored quantity. This prevents stale prices / NaN totals.
+function reconcile(raw: unknown): CartItem[] {
+  if (!Array.isArray(raw)) return [];
+  const result: CartItem[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const { food, quantity } = entry as { food?: { id?: unknown }; quantity?: unknown };
+    const id = food?.id;
+    if (typeof id !== "string") continue;
+    const qty = typeof quantity === "number" && Number.isFinite(quantity) ? Math.floor(quantity) : 0;
+    if (qty <= 0) continue;
+    const fresh = getFoodById(id);
+    if (!fresh) continue; // unknown id → drop
+    result.push({ food: fresh, quantity: qty });
+  }
+  return result;
+}
 
 interface CartState {
   items: CartItem[];
@@ -71,38 +98,49 @@ const CartContext = createContext<{
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { items: [], total: 0, totalItems: 0 });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("cart_items");
+      const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const items: CartItem[] = JSON.parse(saved);
-        if (Array.isArray(items) && items.length > 0) {
+        const items = reconcile(JSON.parse(saved));
+        if (items.length > 0) {
           dispatch({ type: "HYDRATE", items });
         }
       }
-    } catch {}
+    } catch {} finally {
+      setHydrated(true);
+    }
   }, []);
 
+  // Persist only after hydration, so the empty initial state can't clobber a
+  // saved cart before it's read (persist-before-hydrate race under StrictMode).
   useEffect(() => {
-    localStorage.setItem("cart_items", JSON.stringify(state.items));
-  }, [state.items]);
+    if (!hydrated) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+  }, [state.items, hydrated]);
 
-  return (
-    <CartContext.Provider
-      value={{
-        items: state.items,
-        total: state.total,
-        totalItems: state.totalItems,
-        addItem: (food, qty = 1) => dispatch({ type: "ADD", food, quantity: qty }),
-        removeItem: (id) => dispatch({ type: "REMOVE", id }),
-        updateQuantity: (id, quantity) => dispatch({ type: "UPDATE", id, quantity }),
-        clearCart: () => dispatch({ type: "CLEAR" }),
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+  // dispatch is stable, so these wrappers only need to be created once.
+  const addItem = useCallback((food: FoodItem, qty = 1) => dispatch({ type: "ADD", food, quantity: qty }), []);
+  const removeItem = useCallback((id: string) => dispatch({ type: "REMOVE", id }), []);
+  const updateQuantity = useCallback((id: string, quantity: number) => dispatch({ type: "UPDATE", id, quantity }), []);
+  const clearCart = useCallback(() => dispatch({ type: "CLEAR" }), []);
+
+  const value = useMemo(
+    () => ({
+      items: state.items,
+      total: state.total,
+      totalItems: state.totalItems,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+    }),
+    [state.items, state.total, state.totalItems, addItem, removeItem, updateQuantity, clearCart]
   );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {

@@ -21,7 +21,7 @@ export function Footer() {
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 z-30 bg-background border-t border-border">
-      <div className="flex items-end max-w-[480px] mx-auto px-1 pt-2 pb-3">
+      <div className="flex items-stretch max-w-[480px] mx-auto px-1 pt-2 pb-3 pb-safe">
         {tabs.map(({ href, icon: Icon, labelKey }) => {
           const isActive =
             href === "/"
@@ -36,30 +36,42 @@ export function Footer() {
             <Link
               key={href}
               href={href}
-              className="flex-1 flex flex-col items-center gap-1 btn-press"
+              aria-current={isActive ? "page" : undefined}
+              className="relative flex-1 flex flex-col items-center gap-1 pt-1 btn-press"
             >
-              <div className="relative">
-                <Icon
-                  className={cn(
-                    "w-6 h-6 transition-colors",
-                    isActive ? "text-foreground" : "text-muted-foreground"
-                  )}
-                  strokeWidth={isActive ? 2 : 1.5}
-                />
-                {isCart && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-black flex items-center justify-center px-1 leading-none">
-                    {totalItems > 9 ? "9+" : totalItems}
-                  </span>
-                )}
-              </div>
+              {/* Active indicator: rounded top bar */}
               <span
                 className={cn(
-                  "text-[10px] leading-none transition-colors",
-                  isActive ? "font-bold text-foreground" : "font-medium text-muted-foreground"
+                  "absolute top-0 h-1 w-8 rounded-full bg-primary transition-all duration-200",
+                  isActive ? "opacity-100 scale-100" : "opacity-0 scale-50"
                 )}
-              >
-                {t(labelKey)}
-              </span>
+              />
+              <div className="flex flex-col items-center gap-1 px-3 py-1.5">
+                <div className="relative">
+                  <Icon
+                    className={cn(
+                      "transition-all",
+                      isActive ? "w-[26px] h-[26px] text-primary" : "w-6 h-6 text-muted-foreground"
+                    )}
+                    strokeWidth={isActive ? 2.5 : 1.75}
+                    fill={isActive ? "currentColor" : "none"}
+                    fillOpacity={isActive ? 0.12 : 0}
+                  />
+                  {isCart && totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-black flex items-center justify-center px-1 leading-none ring-2 ring-background">
+                      {totalItems > 9 ? "9+" : totalItems}
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "text-[10px] leading-none transition-colors",
+                    isActive ? "font-bold text-primary" : "font-medium text-muted-foreground"
+                  )}
+                >
+                  {t(labelKey)}
+                </span>
+              </div>
             </Link>
           );
         })}

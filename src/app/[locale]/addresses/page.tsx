@@ -1,45 +1,38 @@
 "use client";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
 import { MapPin, Home, Briefcase, Plus, Trash2, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/shared/lib/utils";
 import type { LucideIcon } from "lucide-react";
-
-interface Address {
-  id: string;
-  type: "home" | "work" | "other";
-  label: string;
-  address: string;
-  detail?: string;
-  isDefault: boolean;
-}
+import { useAddresses, type Address } from "@/context/AddressContext";
+import { useDialog } from "@/shared/lib/useDialog";
 
 const typeIcons: Record<Address["type"], LucideIcon> = { home: Home, work: Briefcase, other: MapPin };
 const typeLabelKeys: Record<Address["type"], string> = { home: "typeHome", work: "typeWork", other: "typeOther" };
 
-const initial: Address[] = [
-  { id: "1", type: "home", label: "Uy", address: "Chilonzor 12-kvartal, 5-uy", detail: "Toshkent", isDefault: true },
-  { id: "2", type: "work", label: "Ish", address: "Amir Temur ko'chasi, 107-bino", detail: "Toshkent", isDefault: false },
-];
-
 export default function AddressesPage() {
   const t = useTranslations("Addresses");
-  const [addresses, setAddresses] = useState(initial);
+  const tCommon = useTranslations("Header");
+  const { addresses, addAddress, removeAddress, setDefault } = useAddresses();
   const [showModal, setShowModal] = useState(false);
+  const closeModal = useCallback(() => setShowModal(false), []);
+  const { panelRef: modalRef, initialFocusRef: labelInputRef } =
+    useDialog<HTMLDivElement, HTMLInputElement>(showModal, closeModal);
   const [newType, setNewType] = useState<Address["type"]>("other");
   const [newLabel, setNewLabel] = useState("");
   const [newAddress, setNewAddress] = useState("");
   const [newDetail, setNewDetail] = useState("");
 
-  const setDefault = (id: string) => setAddresses((p) => p.map((a) => ({ ...a, isDefault: a.id === id })));
-  const remove = (id: string) => setAddresses((p) => p.filter((a) => a.id !== id));
+  const remove = (id: string) => removeAddress(id);
   const add = () => {
     if (!newAddress.trim()) return;
-    setAddresses((p) => [
-      ...p,
-      { id: Date.now().toString(), type: newType, label: newLabel || t(typeLabelKeys[newType]), address: newAddress, detail: newDetail || undefined, isDefault: p.length === 0 },
-    ]);
+    addAddress({
+      type: newType,
+      label: newLabel || t(typeLabelKeys[newType]),
+      address: newAddress,
+      detail: newDetail || undefined,
+    });
     setShowModal(false);
     setNewLabel(""); setNewAddress(""); setNewDetail(""); setNewType("other");
   };
@@ -74,6 +67,7 @@ export default function AddressesPage() {
                 )}
                 <button
                   onClick={() => remove(addr.id)}
+                  aria-label={t("delete")}
                   className={cn("flex items-center gap-1.5 justify-center py-2.5 rounded-xl bg-secondary text-xs font-semibold text-destructive btn-press", addr.isDefault ? "flex-1" : "px-5")}
                 >
                   <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -92,10 +86,16 @@ export default function AddressesPage() {
       {showModal && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowModal(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl p-5 max-w-[480px] mx-auto">
+          <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="address-modal-title"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-3xl p-5 max-w-[480px] mx-auto"
+          >
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-lg text-foreground">{t("modalTitle")}</h2>
-              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full border border-border flex items-center justify-center">
+              <h2 id="address-modal-title" className="font-bold text-lg text-foreground">{t("modalTitle")}</h2>
+              <button onClick={() => setShowModal(false)} aria-label={tCommon("close")} className="w-8 h-8 rounded-full border border-border flex items-center justify-center">
                 <X className="w-4 h-4 text-foreground" strokeWidth={1.75} />
               </button>
             </div>
@@ -111,7 +111,7 @@ export default function AddressesPage() {
               })}
             </div>
             <div className="space-y-3 mb-5">
-              <input type="text" placeholder={t("labelPlaceholder")} value={newLabel} onChange={(e) => setNewLabel(e.target.value)} className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none" />
+              <input ref={labelInputRef} type="text" placeholder={t("labelPlaceholder")} value={newLabel} onChange={(e) => setNewLabel(e.target.value)} className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none" />
               <input type="text" placeholder={t("addressPlaceholder")} value={newAddress} onChange={(e) => setNewAddress(e.target.value)} className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none" />
               <input type="text" placeholder={t("detailPlaceholder")} value={newDetail} onChange={(e) => setNewDetail(e.target.value)} className="w-full bg-secondary rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none" />
             </div>

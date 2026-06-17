@@ -1,13 +1,14 @@
 "use client";
+import Image from "next/image";
 import { FoodCard } from "@/components/FoodCard";
 import { getRestaurantById, getFoodsByRestaurant } from "@/mock/data";
 import { Star, Clock, Bike, Heart, UtensilsCrossed, ArrowLeft, X, ZoomIn } from "lucide-react";
 import { use, useState } from "react";
 import { cn, fmt } from "@/shared/lib/utils";
 import { useFavorites } from "@/context/FavoritesContext";
-import { useCart } from "@/context/CartContext";
-import { Link, useRouter } from "@/navigation";
+import { useRouter } from "@/navigation";
 import { useTranslations } from "next-intl";
+import { FloatingCartBar } from "@/components/FloatingCartBar";
 
 export default function RestaurantPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations("RestaurantDetail");
@@ -16,7 +17,6 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
   const restaurant = getRestaurantById(id);
   const foods = getFoodsByRestaurant(id);
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { totalItems, total } = useCart();
   const [activeTab, setActiveTab] = useState("Barchasi");
   const [imgOpen, setImgOpen] = useState(false);
 
@@ -45,10 +45,11 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
           className="fixed inset-0 bg-black z-[9999] flex items-center justify-center"
           onClick={() => setImgOpen(false)}
         >
-          <img src={restaurant.image} alt={restaurant.name} className="max-w-full max-h-full object-contain" />
+          <img src={restaurant.image} alt={restaurant.name} decoding="async" className="max-w-full max-h-full object-contain" />
           <button
             className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
             onClick={() => setImgOpen(false)}
+            aria-label={t("back")}
           >
             <X className="w-5 h-5 text-white" strokeWidth={2} />
           </button>
@@ -56,10 +57,10 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
       )}
 
       {/* Hero */}
-      <div className="relative h-56 bg-secondary cursor-pointer" onClick={() => restaurant.image && setImgOpen(true)}>
+      <div className="relative h-56 bg-secondary cursor-pointer overflow-hidden" onClick={() => restaurant.image && setImgOpen(true)}>
         {restaurant.image ? (
           <>
-            <img src={restaurant.image} alt={restaurant.name} className="w-full h-full object-cover" />
+            <Image src={restaurant.image} alt={restaurant.name} fill priority sizes="(max-width: 480px) 100vw, 480px" className="object-cover" />
             <div className="absolute bottom-3 right-16 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
               <ZoomIn className="w-4 h-4 text-white" strokeWidth={1.75} />
             </div>
@@ -74,6 +75,7 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
         <button
           onClick={() => router.back()}
           className="absolute top-4 left-4 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm shadow flex items-center justify-center btn-press"
+          aria-label={t("back")}
         >
           <ArrowLeft className="w-5 h-5 text-foreground" strokeWidth={1.75} />
         </button>
@@ -81,6 +83,8 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
         <button
           onClick={() => toggleFavorite(restaurant.id)}
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm shadow flex items-center justify-center btn-press"
+          aria-label={restaurant.name}
+          aria-pressed={fav}
         >
           <Heart
             className={cn("w-5 h-5", fav ? "fill-red-500 text-red-500" : "text-foreground")}
@@ -151,10 +155,12 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Foods */}
-      <div className="px-4 max-w-[480px] mx-auto pb-32">
-        {filtered.map((food) => (
-          <FoodCard key={food.id} food={food} compact />
-        ))}
+      <div className="px-4 max-w-[480px] mx-auto pt-4 pb-32">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-5">
+          {filtered.map((food) => (
+            <FoodCard key={food.id} food={food} variant="grid" />
+          ))}
+        </div>
         {filtered.length === 0 && (
           <div className="py-16 text-center">
             <p className="text-muted-foreground text-sm">{t("emptyCategory")}</p>
@@ -163,20 +169,7 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Cart CTA */}
-      {totalItems > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 z-20">
-          <div className="max-w-[480px] mx-auto">
-            <Link
-              href="/cart"
-              className="flex items-center justify-between w-full px-5 py-4 rounded-full bg-primary text-primary-foreground font-bold shadow-xl btn-press"
-            >
-              <span className="text-sm font-semibold opacity-80">{t("itemsCount", { count: totalItems })}</span>
-              <span>{t("goToCart")}</span>
-              <span>{fmt(total)}</span>
-            </Link>
-          </div>
-        </div>
-      )}
+      <FloatingCartBar label={t("goToCart")} />
     </div>
   );
 }

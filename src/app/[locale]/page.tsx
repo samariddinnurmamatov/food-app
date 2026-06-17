@@ -1,8 +1,11 @@
 "use client";
+import { memo } from "react";
+import Image from "next/image";
+import useEmblaCarousel from "embla-carousel-react";
 import { LayoutWrapper } from "@/shared/ui/layout-wrapper";
 import { categories, restaurants, foodItems } from "@/mock/data";
 import {
-  Search, SlidersHorizontal, Star, Plus, Minus, Heart, ShoppingBag,
+  Search, Star, Plus, Minus, Heart,
   Clock, Bike, ChevronRight, LayoutGrid,
   UtensilsCrossed, Beef, PieChart, Gift, Coffee, Salad,
   Pizza, Sandwich, Fish,
@@ -11,77 +14,205 @@ import {
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useCart } from "@/context/CartContext";
 import { useFavorites } from "@/context/FavoritesContext";
-import { cn, fmt } from "@/shared/lib/utils";
+import { cn, fmt, sized } from "@/shared/lib/utils";
 import type { FoodItem, Restaurant } from "@/types";
+import { FloatingCartBar } from "@/components/FloatingCartBar";
 
 const iconMap: Record<string, LucideIcon> = {
   UtensilsCrossed, Beef, PieChart, Gift, Coffee, Salad, Pizza, Sandwich, Fish,
 };
 
-const promoSlides = [
-  {
-    tagKey: "promo1Tag",
-    discount: "–50%",
-    descKey: "promo1Desc",
-    Icon: UtensilsCrossed,
-    href: "/categories",
-    btnKey: "promo1Btn",
-  },
-  {
-    tagKey: "promo2Tag",
-    discount: "–20%",
-    descKey: "promo2Desc",
-    Icon: Beef,
-    href: "/restaurant/evos",
-    btnKey: "promo2Btn",
-  },
-  {
-    tagKey: "promo3Tag",
-    discountKey: "promo3Discount",
-    descKey: "promo3Desc",
-    Icon: Bike,
-    href: "/categories",
-    btnKey: "promo3Btn",
-  },
-] satisfies { tagKey: string; discount?: string; discountKey?: string; descKey: string; Icon: LucideIcon; href: string; btnKey: string }[];
+interface BannerSlide {
+  titleKey: string;
+  subtitleKey: string;
+  ctaKey: string;
+  href: string;
+  image: string;
+}
 
-function HomeFoodCard({ food }: { food: FoodItem }) {
+const bannerSlides: BannerSlide[] = [
+  {
+    titleKey: "banner1Title",
+    subtitleKey: "banner1Subtitle",
+    ctaKey: "banner1Cta",
+    href: "/categories",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80",
+  },
+  {
+    titleKey: "banner2Title",
+    subtitleKey: "banner2Subtitle",
+    ctaKey: "banner2Cta",
+    href: "/restaurant/evos",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80",
+  },
+  {
+    titleKey: "banner3Title",
+    subtitleKey: "banner3Subtitle",
+    ctaKey: "banner3Cta",
+    href: "/categories",
+    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&q=80",
+  },
+  {
+    titleKey: "banner4Title",
+    subtitleKey: "banner4Subtitle",
+    ctaKey: "banner4Cta",
+    href: "/categories",
+    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=800&q=80",
+  },
+];
+
+// Swipeable, autoplaying promo banner carousel (embla).
+function BannerCarousel() {
   const t = useTranslations("Home");
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  // Autoplay: advance every 4s, pause on pointer interaction.
+  useEffect(() => {
+    if (!emblaApi) return;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const start = () => {
+      stop();
+      timer = setInterval(() => emblaApi.scrollNext(), 4000);
+    };
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+    start();
+    emblaApi.on("pointerDown", stop);
+    emblaApi.on("pointerUp", start);
+    return () => {
+      stop();
+      emblaApi.off("pointerDown", stop);
+      emblaApi.off("pointerUp", start);
+    };
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((i: number) => emblaApi?.scrollTo(i), [emblaApi]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+        <div className="flex">
+          {bannerSlides.map((slide, i) => (
+            <div key={slide.titleKey} className="relative flex-[0_0_100%] min-w-0 h-44">
+              <Image
+                src={slide.image}
+                alt={t(slide.titleKey)}
+                fill
+                priority={i === 0}
+                sizes="(max-width: 480px) 100vw, 480px"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20" />
+              <div className="absolute inset-0 flex flex-col justify-center p-5 max-w-[80%]">
+                <h2 className="text-white font-black text-2xl leading-tight drop-shadow">
+                  {t(slide.titleKey)}
+                </h2>
+                <p className="text-white/85 text-sm mt-1.5 leading-snug drop-shadow">
+                  {t(slide.subtitleKey)}
+                </p>
+                <Link
+                  href={slide.href}
+                  className="inline-flex items-center self-start gap-1 mt-3 px-4 py-2 rounded-full bg-white text-foreground font-bold text-sm btn-press"
+                >
+                  {t(slide.ctaKey)}
+                  <ChevronRight className="w-4 h-4" strokeWidth={2.25} />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
+        {bannerSlides.map((slide, i) => (
+          <button
+            key={slide.titleKey}
+            onClick={() => scrollTo(i)}
+            aria-label={t(slide.titleKey)}
+            aria-current={selectedIndex === i ? "true" : undefined}
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-300",
+              selectedIndex === i ? "w-5 bg-white" : "w-1.5 bg-white/40"
+            )}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const HomeFoodCard = memo(function HomeFoodCard({ food }: { food: FoodItem }) {
+  const t = useTranslations("Home");
+  const tCard = useTranslations("FoodCard");
   const { items, addItem, updateQuantity } = useCart();
   const qty = items.find((i) => i.food.id === food.id)?.quantity ?? 0;
   const displayRating = food.rating ?? 4.5;
+  const outOfStock = food.isAvailable === false;
 
   const stop = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); };
 
   return (
     <Link href={`/food/${food.id}`} className="block">
       <div className="rounded-2xl overflow-hidden border border-border bg-card">
-        <div className="relative h-36 bg-secondary">
+        <div className="relative h-36 bg-secondary overflow-hidden">
           {food.image ? (
-            <img src={food.image} alt={food.name} className="w-full h-full object-cover" />
+            <Image src={food.image} alt={food.name} fill sizes="(max-width: 480px) 50vw, 240px" className={cn("object-cover", outOfStock && "opacity-50")} />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="w-8 h-8 text-muted-foreground" strokeWidth={1.25} />
             </div>
           )}
-          <div className="absolute top-2 left-2 flex items-center gap-0.5 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1">
-            <Star className="w-3 h-3 fill-foreground text-foreground" strokeWidth={0} />
-            <span className="text-xs font-bold text-foreground">{displayRating}</span>
-          </div>
+          {outOfStock ? (
+            <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1">
+              <span className="text-xs font-bold text-foreground">{tCard("outOfStock")}</span>
+            </div>
+          ) : (
+            <div className="absolute top-2 left-2 flex items-center gap-0.5 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1">
+              <Star className="w-3 h-3 fill-foreground text-foreground" strokeWidth={0} />
+              <span className="text-xs font-bold text-foreground">{displayRating}</span>
+            </div>
+          )}
         </div>
         <div className="p-3 space-y-2">
-          <div>
+          <div className={cn(outOfStock && "opacity-50")}>
             <p className="font-bold text-sm text-card-foreground leading-tight truncate">{food.name}</p>
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
               {restaurants.find((r) => r.id === food.restaurantId)?.name ?? food.category}
             </p>
           </div>
-          <p className="font-black text-sm text-card-foreground">{fmt(food.price)}</p>
+          <p className={cn("font-black text-sm text-card-foreground", outOfStock && "opacity-50")}>{fmt(food.price)}</p>
 
-          {qty === 0 ? (
+          {outOfStock ? (
+            <button
+              disabled
+              onClick={stop}
+              className="w-full h-9 rounded-xl bg-secondary text-muted-foreground text-xs font-bold flex items-center justify-center gap-1 cursor-not-allowed"
+            >
+              {tCard("outOfStock")}
+            </button>
+          ) : qty === 0 ? (
             <button
               onClick={(e) => { stop(e); addItem(food); }}
               className="w-full h-9 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1 btn-press"
@@ -93,7 +224,7 @@ function HomeFoodCard({ food }: { food: FoodItem }) {
             <div className="w-full h-9 flex items-center justify-between bg-secondary rounded-xl px-1">
               <button
                 onClick={(e) => { stop(e); updateQuantity(food.id, qty - 1); }}
-                aria-label="−"
+                aria-label={t("decreaseQty", { name: food.name })}
                 className="w-7 h-7 rounded-lg bg-background flex items-center justify-center btn-press"
               >
                 <Minus className="w-4 h-4 text-foreground" strokeWidth={2.5} />
@@ -101,7 +232,7 @@ function HomeFoodCard({ food }: { food: FoodItem }) {
               <span className="font-black text-sm text-foreground tabular-nums">{qty}</span>
               <button
                 onClick={(e) => { stop(e); updateQuantity(food.id, qty + 1); }}
-                aria-label="+"
+                aria-label={t("increaseQty", { name: food.name })}
                 className="w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center btn-press"
               >
                 <Plus className="w-4 h-4" strokeWidth={2.5} />
@@ -112,9 +243,9 @@ function HomeFoodCard({ food }: { food: FoodItem }) {
       </div>
     </Link>
   );
-}
+});
 
-function HomeRestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+const HomeRestaurantCard = memo(function HomeRestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const t = useTranslations("Home");
   const { isFavorite, toggleFavorite } = useFavorites();
   const fav = isFavorite(restaurant.id);
@@ -124,9 +255,9 @@ function HomeRestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   return (
     <Link href={`/restaurant/${restaurant.id}`} className="block mb-4">
       <div className="rounded-2xl overflow-hidden border border-border bg-card">
-        <div className="relative h-44 bg-secondary">
+        <div className="relative h-44 bg-secondary overflow-hidden">
           {restaurant.image ? (
-            <img src={restaurant.image} alt={restaurant.name} className="w-full h-full object-cover" />
+            <Image src={restaurant.image} alt={restaurant.name} fill sizes="(max-width: 480px) 100vw, 480px" className="object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="w-10 h-10 text-muted-foreground" strokeWidth={1.25} />
@@ -185,48 +316,12 @@ function HomeRestaurantCard({ restaurant }: { restaurant: Restaurant }) {
       </div>
     </Link>
   );
-}
-
-// Floating "do you want to order?" bar — appears once the cart has items
-function HomeCartBar() {
-  const t = useTranslations("Home");
-  const { totalItems, total } = useCart();
-  if (totalItems === 0) return null;
-  return (
-    <div className="fixed bottom-[84px] left-0 right-0 z-30 px-4 pointer-events-none">
-      <div className="max-w-[480px] mx-auto pointer-events-auto">
-        <Link
-          href="/cart"
-          className="flex items-center justify-between gap-3 bg-primary text-primary-foreground rounded-2xl pl-3 pr-4 py-2.5 shadow-lg shadow-primary/30 btn-press"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-white/20">
-              <ShoppingBag className="w-4 h-4" strokeWidth={2} />
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-white text-primary text-[9px] font-black flex items-center justify-center leading-none">
-                {totalItems > 9 ? "9+" : totalItems}
-              </span>
-            </span>
-            <div className="leading-tight text-left">
-              <p className="text-[11px] text-primary-foreground/75 font-medium">{t("cartItems", { count: totalItems })}</p>
-              <p className="font-black text-sm">{fmt(total)}</p>
-            </div>
-          </div>
-          <span className="flex items-center gap-1 font-bold text-sm">
-            {t("order")}
-            <ChevronRight className="w-4 h-4" strokeWidth={2.25} />
-          </span>
-        </Link>
-      </div>
-    </div>
-  );
-}
+});
 
 export default function HomePage() {
   const t = useTranslations("Home");
   const { totalItems } = useCart();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [promoDot, setPromoDot] = useState(0);
-  const touchXRef = useRef<number | null>(null);
 
   // Drag-to-scroll for the category slider (mouse; touch uses native scroll)
   const catScrollRef = useRef<HTMLDivElement>(null);
@@ -251,13 +346,6 @@ export default function HomePage() {
     setActiveCategory(id);
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setPromoDot((d) => (d + 1) % promoSlides.length);
-    }, 3500);
-    return () => clearInterval(timer);
-  }, []);
-
   const popularFoods = foodItems.filter((f) => f.isPopular);
   const openRestaurants = restaurants.filter((r) => r.isOpen);
 
@@ -276,72 +364,17 @@ export default function HomePage() {
     <LayoutWrapper>
       <div className={cn("px-4 max-w-[480px] mx-auto pt-4 space-y-6", totalItems > 0 ? "pb-28" : "pb-4")}>
 
-        {/* ── Search + Filter ── */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/categories"
-            className="flex-1 flex items-center gap-3 bg-secondary rounded-2xl px-4 py-3.5"
-          >
-            <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" strokeWidth={1.75} />
-            <span className="text-sm text-muted-foreground">{t("searchPlaceholder")}</span>
-          </Link>
-          <Link
-            href="/categories"
-            className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center flex-shrink-0 btn-press"
-          >
-            <SlidersHorizontal className="w-5 h-5 text-primary-foreground" strokeWidth={1.75} />
-          </Link>
-        </div>
+        {/* ── Search ── */}
+        <Link
+          href="/categories"
+          className="flex items-center gap-3 bg-secondary rounded-2xl px-4 py-3.5"
+        >
+          <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" strokeWidth={1.75} />
+          <span className="text-sm text-muted-foreground">{t("searchPlaceholder")}</span>
+        </Link>
 
-        {/* ── Promo slider ── */}
-        {(() => {
-          const slide = promoSlides[promoDot];
-          const { Icon } = slide;
-          return (
-            <div
-              className="relative rounded-2xl bg-foreground px-5 py-5 overflow-hidden select-none"
-              onTouchStart={(e) => { touchXRef.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                if (touchXRef.current === null) return;
-                const diff = touchXRef.current - e.changedTouches[0].clientX;
-                if (Math.abs(diff) > 40)
-                  setPromoDot((d) => diff > 0 ? (d + 1) % 3 : (d + 2) % 3);
-                touchXRef.current = null;
-              }}
-            >
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 text-background">
-                <Icon className="w-28 h-28" strokeWidth={0.75} />
-              </div>
-              <p key={`tag-${promoDot}`} className="text-[10px] font-bold text-background/50 uppercase tracking-[0.15em]">
-                {t(slide.tagKey)}
-              </p>
-              <p key={`disc-${promoDot}`} className="text-5xl font-black text-background leading-none mt-1">
-                {"discountKey" in slide && slide.discountKey ? t(slide.discountKey) : slide.discount}
-              </p>
-              <p key={`desc-${promoDot}`} className="text-sm text-background/70 mt-1.5 max-w-[180px] leading-snug">
-                {t(slide.descKey)}
-              </p>
-              <Link
-                href={slide.href}
-                className="inline-block mt-4 px-5 py-2.5 rounded-full bg-background text-foreground font-bold text-sm btn-press"
-              >
-                {t(slide.btnKey)}
-              </Link>
-              <div className="absolute bottom-4 right-4 flex items-center gap-1.5">
-                {promoSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPromoDot(i)}
-                    className={cn(
-                      "rounded-full transition-all duration-300",
-                      promoDot === i ? "w-4 h-1.5 bg-background" : "w-1.5 h-1.5 bg-background/30"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        })()}
+        {/* ── Promo banner carousel ── */}
+        <BannerCarousel />
 
         {/* ── Categories (drag-to-scroll slider) ── */}
         <div
@@ -388,9 +421,10 @@ export default function HomePage() {
                     {/* emoji fallback sits behind the photo; shown if the image fails to load */}
                     <span className="absolute text-2xl select-none">{cat.emoji}</span>
                     <img
-                      src={cat.image}
+                      src={sized(cat.image, 128)}
                       alt={cat.name}
                       draggable={false}
+                      decoding="async"
                       onError={(e) => { e.currentTarget.style.display = "none"; }}
                       className="relative w-full h-full object-cover"
                     />
@@ -447,7 +481,7 @@ export default function HomePage() {
         )}
 
       </div>
-      <HomeCartBar />
+      <FloatingCartBar label={t("order")} aboveFooter />
     </LayoutWrapper>
   );
 }
