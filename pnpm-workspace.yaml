@@ -1,0 +1,11 @@
+# pnpm 11+ build-script approval (the package.json "pnpm" field is no longer read
+# by pnpm 11). pnpm blocks dependency build scripts by default for supply-chain
+# safety; these ship prebuilt native binaries, so approving them just clears the
+# "ignored build scripts" gate that otherwise makes `pnpm run dev`/`build` exit 1.
+# (@swc/core + @parcel/watcher were added by the Next.js 16 upgrade.)
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  '@tailwindcss/oxide': true
+  sharp: true
+  unrs-resolver: true

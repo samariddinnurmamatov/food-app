@@ -94,7 +94,7 @@ export function PromoInput({ applied, onChange }: PromoInputProps) {
               className="text-xs font-bold px-2.5 py-1 rounded-full border border-dashed border-border text-foreground hover:bg-secondary btn-press"
             >
               {p.code}
-              {p.kind === "percent" ? <span className="text-primary"> −{p.value}%</span> : null}
+              {p.kind === "percent" ? <span className="text-primary-strong"> −{p.value}%</span> : null}
             </button>
           ))}
         </div>

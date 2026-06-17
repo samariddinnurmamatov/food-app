@@ -45,7 +45,7 @@ export default function NotificationsPage() {
               <div className="flex justify-end mb-3">
                 <button
                   onClick={markAllRead}
-                  className="text-xs font-semibold text-primary btn-press"
+                  className="text-xs font-semibold text-primary-strong btn-press"
                 >
                   {t("markAllRead")}
                 </button>

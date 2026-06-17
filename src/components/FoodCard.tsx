@@ -139,7 +139,7 @@ export const FoodCard = memo(function FoodCard({ food, compact = false, variant,
           <div className="relative">
             <div className={cn("relative h-32 sm:h-36 rounded-2xl bg-secondary overflow-hidden", outOfStock && "opacity-50")}>
               {food.image ? (
-                <Image src={food.image} alt={food.name} fill sizes="(max-width: 480px) 50vw, 240px" className="object-cover" />
+                <Image src={food.image} alt={food.name} fill quality={60} sizes="(max-width: 480px) 50vw, 240px" className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <UtensilsCrossed className="w-8 h-8 text-muted-foreground" strokeWidth={1.5} />
@@ -222,7 +222,7 @@ export const FoodCard = memo(function FoodCard({ food, compact = false, variant,
       <div className="rounded-2xl overflow-hidden border border-border bg-card">
         <div className="h-36 bg-secondary relative overflow-hidden">
           {food.image ? (
-            <Image src={food.image} alt={food.name} fill sizes="(max-width: 480px) 50vw, 240px" className={cn("object-cover", outOfStock && "opacity-50")} />
+            <Image src={food.image} alt={food.name} fill quality={60} sizes="(max-width: 480px) 50vw, 240px" className={cn("object-cover", outOfStock && "opacity-50")} />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="w-8 h-8 text-muted-foreground" strokeWidth={1.5} />

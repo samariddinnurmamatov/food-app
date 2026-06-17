@@ -2,6 +2,7 @@
   "Home": {
     "free": "Tekin",
     "reviewsCount": "{count} ta baho",
+    "bannerSlide": "{n}-banner",
     "searchPlaceholder": "Taom yoki oshxona qidiring",
     "all": "Barchasi",
     "popularDishes": "Mashhur taomlar",
@@ -241,7 +242,7 @@
     "close": "Yopish"
   },
   "Footer": {
-    "home": "Bosh sahifa",
+    "home": "Bosh",
     "search": "Qidiruv",
     "cart": "Savat",
     "orders": "Buyurtmalar",
@@ -255,7 +256,9 @@
   },
   "RestaurantCard": {
     "free": "Tekin",
-    "closed": "Yopiq"
+    "closed": "Yopiq",
+    "favorite": "{name}ni sevimlilarga qo'shish",
+    "unfavorite": "{name}ni sevimlilardan olib tashlash"
   },
   "CategoryCard": {
     "itemsCount": "{count} ta mahsulot"

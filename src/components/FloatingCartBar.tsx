@@ -46,7 +46,9 @@ export function FloatingCartBar({ label, aboveFooter = false }: Props) {
           <div className="flex items-center gap-2.5">
             <span className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-white/20">
               <ShoppingBag className="w-4 h-4" strokeWidth={2} />
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-white text-primary text-[9px] font-black flex items-center justify-center leading-none">
+              {/* Chip is always white in both themes → use the fixed dark red
+                  (#c81e1e ≈ 5.74:1 on white) so contrast passes regardless of theme. */}
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-white text-[#c81e1e] text-[9px] font-black flex items-center justify-center leading-none">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             </span>

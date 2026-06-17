@@ -95,7 +95,6 @@ export function Header() {
               </p>
               <button
                 onClick={() => intlRouter.push("/addresses")}
-                aria-label={t("addresses")}
                 className="flex items-center gap-1 mt-0.5 btn-press"
               >
                 <MapPin className="w-3 h-3 text-foreground flex-shrink-0" strokeWidth={2} />
@@ -109,7 +108,7 @@ export function Header() {
             <button
               onClick={() => intlRouter.push("/notifications")}
               className="relative w-10 h-10 rounded-full border border-border flex items-center justify-center flex-shrink-0 btn-press"
-              aria-label={t("notifications")}
+              aria-label={unreadCount > 0 ? `${t("notifications")} (${unreadCount})` : t("notifications")}
             >
               <Bell className="w-4 h-4 text-foreground" strokeWidth={1.75} />
               {unreadCount > 0 && (

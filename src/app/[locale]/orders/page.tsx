@@ -19,9 +19,9 @@ const statusLabelKey: Record<Order["status"], string> = {
 };
 
 const statusColor: Record<Order["status"], string> = {
-  pending: "text-primary",
-  preparing: "text-primary",
-  on_the_way: "text-primary",
+  pending: "text-primary-strong",
+  preparing: "text-primary-strong",
+  on_the_way: "text-primary-strong",
   delivered: "text-muted-foreground",
   cancelled: "text-destructive",
 };

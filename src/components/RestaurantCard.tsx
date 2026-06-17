@@ -78,7 +78,7 @@ export const RestaurantCard = memo(function RestaurantCard({ restaurant, compact
       <div className="rounded-2xl overflow-hidden border border-border bg-card">
         <div className="relative h-48 bg-secondary overflow-hidden">
           {restaurant.image ? (
-            <Image src={restaurant.image} alt={restaurant.name} fill sizes="(max-width: 480px) 100vw, 480px" className="object-cover" />
+            <Image src={restaurant.image} alt={restaurant.name} fill quality={60} sizes="(max-width: 480px) 100vw, 480px" className="object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="w-10 h-10 text-muted-foreground" strokeWidth={1.25} />
@@ -91,7 +91,7 @@ export const RestaurantCard = memo(function RestaurantCard({ restaurant, compact
           )}
           <button
             onClick={handleFav}
-            aria-label={restaurant.name}
+            aria-label={fav ? t("unfavorite", { name: restaurant.name }) : t("favorite", { name: restaurant.name })}
             aria-pressed={fav}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background shadow flex items-center justify-center"
           >

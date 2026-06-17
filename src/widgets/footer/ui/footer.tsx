@@ -46,7 +46,7 @@ export function Footer() {
                   isActive ? "opacity-100 scale-100" : "opacity-0 scale-50"
                 )}
               />
-              <div className="flex flex-col items-center gap-1 px-3 py-1.5">
+              <div className="flex flex-col items-center gap-1 px-1 py-1.5">
                 <div className="relative">
                   <Icon
                     className={cn(
@@ -65,8 +65,8 @@ export function Footer() {
                 </div>
                 <span
                   className={cn(
-                    "text-[10px] leading-none transition-colors",
-                    isActive ? "font-bold text-primary" : "font-medium text-muted-foreground"
+                    "text-[10px] leading-none whitespace-nowrap transition-colors",
+                    isActive ? "font-bold text-primary-strong" : "font-medium text-muted-foreground"
                   )}
                 >
                   {t(labelKey)}

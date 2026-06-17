@@ -112,7 +112,7 @@ export function LocationPicker({ address, onAddressChange }: LocationPickerProps
       </button>
 
       {error && (
-        <p className="text-xs text-primary text-center">{t("locationError")}</p>
+        <p className="text-xs text-primary-strong text-center">{t("locationError")}</p>
       )}
     </div>
   );

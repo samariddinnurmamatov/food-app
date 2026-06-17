@@ -39,28 +39,28 @@ const bannerSlides: BannerSlide[] = [
     subtitleKey: "banner1Subtitle",
     ctaKey: "banner1Cta",
     href: "/categories",
-    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80",
+    image: "/banners/banner1.jpg",
   },
   {
     titleKey: "banner2Title",
     subtitleKey: "banner2Subtitle",
     ctaKey: "banner2Cta",
     href: "/restaurant/evos",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80",
+    image: "/banners/banner2.jpg",
   },
   {
     titleKey: "banner3Title",
     subtitleKey: "banner3Subtitle",
     ctaKey: "banner3Cta",
     href: "/categories",
-    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&q=80",
+    image: "/banners/banner3.jpg",
   },
   {
     titleKey: "banner4Title",
     subtitleKey: "banner4Subtitle",
     ctaKey: "banner4Cta",
     href: "/categories",
-    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=800&q=80",
+    image: "/banners/banner4.jpg",
   },
 ];
 
@@ -120,6 +120,9 @@ function BannerCarousel() {
                 alt={t(slide.titleKey)}
                 fill
                 priority={i === 0}
+                fetchPriority={i === 0 ? "high" : "auto"}
+                loading={i === 0 ? "eager" : "lazy"}
+                quality={40}
                 sizes="(max-width: 480px) 100vw, 480px"
                 className="object-cover"
               />
@@ -150,7 +153,7 @@ function BannerCarousel() {
           <button
             key={slide.titleKey}
             onClick={() => scrollTo(i)}
-            aria-label={t(slide.titleKey)}
+            aria-label={t("bannerSlide", { n: i + 1 })}
             aria-current={selectedIndex === i ? "true" : undefined}
             className={cn(
               "h-1.5 rounded-full transition-all duration-300",
@@ -247,6 +250,7 @@ const HomeFoodCard = memo(function HomeFoodCard({ food }: { food: FoodItem }) {
 
 const HomeRestaurantCard = memo(function HomeRestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const t = useTranslations("Home");
+  const tCard = useTranslations("RestaurantCard");
   const { isFavorite, toggleFavorite } = useFavorites();
   const fav = isFavorite(restaurant.id);
   const CuisineIcon = iconMap[categories.find((c) => c.id === restaurant.categoryId)?.icon ?? ""] ?? UtensilsCrossed;
@@ -277,6 +281,8 @@ const HomeRestaurantCard = memo(function HomeRestaurantCard({ restaurant }: { re
 
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(restaurant.id); }}
+            aria-label={fav ? tCard("unfavorite", { name: restaurant.name }) : tCard("favorite", { name: restaurant.name })}
+            aria-pressed={fav}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background shadow flex items-center justify-center btn-press"
           >
             <Heart

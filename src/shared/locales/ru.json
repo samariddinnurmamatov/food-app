@@ -2,6 +2,7 @@
   "Home": {
     "free": "Бесплатно",
     "reviewsCount": "{count} оценок",
+    "bannerSlide": "Баннер {n}",
     "searchPlaceholder": "Поиск блюда или ресторана",
     "all": "Все",
     "popularDishes": "Популярные блюда",
@@ -255,7 +256,9 @@
   },
   "RestaurantCard": {
     "free": "Бесплатно",
-    "closed": "Закрыто"
+    "closed": "Закрыто",
+    "favorite": "Добавить {name} в избранное",
+    "unfavorite": "Убрать {name} из избранного"
   },
   "CategoryCard": {
     "itemsCount": "{count} товаров"

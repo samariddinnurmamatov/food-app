@@ -12,6 +12,7 @@ import { FloatingCartBar } from "@/components/FloatingCartBar";
 
 export default function RestaurantPage({ params }: { params: Promise<{ id: string }> }) {
   const t = useTranslations("RestaurantDetail");
+  const tCard = useTranslations("RestaurantCard");
   const { id } = use(params);
   const router = useRouter();
   const restaurant = getRestaurantById(id);
@@ -83,7 +84,7 @@ export default function RestaurantPage({ params }: { params: Promise<{ id: strin
         <button
           onClick={() => toggleFavorite(restaurant.id)}
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm shadow flex items-center justify-center btn-press"
-          aria-label={restaurant.name}
+          aria-label={fav ? tCard("unfavorite", { name: restaurant.name }) : tCard("favorite", { name: restaurant.name })}
           aria-pressed={fav}
         >
           <Heart

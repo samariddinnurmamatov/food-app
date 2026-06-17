@@ -23,9 +23,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteDescription =
+  "Food App — Toshkentdagi eng yaxshi restoranlardan mazali taomlarni tez va qulay buyurtma qiling. Yetkazib berish bir necha daqiqada.";
+
 export const metadata: Metadata = {
-  title: "Food App",
-  description: "Food App — Mazali taomlarni buyurtma qiling",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Food App — Mazali taomlarni buyurtma qiling",
+    template: "%s · Food App",
+  },
+  description: siteDescription,
+  applicationName: "Food App",
+  keywords: [
+    "ovqat yetkazib berish",
+    "taom buyurtma",
+    "restoran",
+    "Toshkent",
+    "food delivery",
+    "Food App",
+  ],
+  authors: [{ name: "Food App" }],
+  creator: "Food App",
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    siteName: "Food App",
+    title: "Food App — Mazali taomlarni buyurtma qiling",
+    description: siteDescription,
+    locale: "uz_UZ",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary",
+    title: "Food App — Mazali taomlarni buyurtma qiling",
+    description: siteDescription,
+  },
 };
 
 export const viewport: Viewport = {

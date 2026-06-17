@@ -2,6 +2,7 @@
   "Home": {
     "free": "Free",
     "reviewsCount": "{count} reviews",
+    "bannerSlide": "Slide {n}",
     "searchPlaceholder": "Search for a dish or restaurant",
     "all": "All",
     "popularDishes": "Popular dishes",
@@ -255,7 +256,9 @@
   },
   "RestaurantCard": {
     "free": "Free",
-    "closed": "Closed"
+    "closed": "Closed",
+    "favorite": "Add {name} to favorites",
+    "unfavorite": "Remove {name} from favorites"
   },
   "CategoryCard": {
     "itemsCount": "{count} items"
